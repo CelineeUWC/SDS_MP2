@@ -1,0 +1,22 @@
+---
+title: "Web_scaping"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(polite)
+```
+
+
+```{r}
+session <- bow( "https://www.bestplaces.net/city/illinois/naperville", force = TRUE) 
+nih_title <- scrape(session) |>
+  html_nodes("b , .list-group-item-action") |>
+  html_text()
+
+nih_title 
+
+```
+
