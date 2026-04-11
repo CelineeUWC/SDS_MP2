@@ -1,0 +1,70 @@
+---
+title: "MP2_APIscraping"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(httr)
+library(jsonlite)
+
+get_artist_data <- function(artist_name) {
+  # 1. SETUP: Identifiers & Rate Limiting
+  # MusicBrainz rule: meaningful User-Agent + 1 request per second
+  ua <- user_agent("StOlaf_StatsProject/1.0 ( youruser@stolaf.edu )")
+  base_url <- "https://musicbrainz.org/ws/2/artist/"
+  
+  # RULE: We must wait 1 second between calls
+  Sys.sleep(1.1)
+  
+  # 2. SEARCH: Get the MBID for the artist
+  # We use the search endpoint first: artist?query=NAME&fmt=json
+  search_res <- GET(
+    url = base_url,
+    query = list(query = artist_name, fmt = "json"),
+    ua
+  )
+  
+  # Check if the search worked
+  if (status_code(search_res) != 200) return(NULL)
+  
+  search_data <- fromJSON(content(search_res, as = "text", encoding = "UTF-8"))
+  
+  # Grab the first artist ID from the results
+  artist_id <- search_data$artists$id[1]
+  
+  if (is.null(artist_id)) return(NULL)
+  
+  # 3. LOOKUP: Get the actual details using the MBID
+  # Endpoint: artist/MBID?fmt=json
+  Sys.sleep(1.1) # Respect the rate limit again!
+  
+  lookup_res <- GET(
+    url = paste0(base_url, artist_id),
+    query = list(fmt = "json"),
+    ua
+  )
+  
+  artist_info <- fromJSON(content(lookup_res, as = "text", encoding = "UTF-8"))
+  
+  # 4. TIBBLE: Return the data
+  tibble(
+    artist = artist_name,
+    type   = artist_info$type %||% "Unknown",
+    gender = artist_info$gender %||% "N/A",
+    area   = artist_info$area$name %||% "Unknown",
+    start_date = artist_info$`life-span`$begin %||% "N/A"
+  )
+}
+
+# 5 Artists
+target_artists <- c("The Beatles", "Taylor Swift", "Radiohead", "Daft Punk", "Miles Davis")
+
+# Use map_dfr to run the function for all 5
+final_results <- map_dfr(target_artists, get_artist_data)
+
+print(final_results)
+
+
+```
+
