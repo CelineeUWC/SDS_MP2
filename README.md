@@ -1,4 +1,4 @@
-Flight prices!
+Global artists!
 
 
 fixes new issuess
