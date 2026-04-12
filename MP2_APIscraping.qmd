@@ -49,7 +49,7 @@ for(i in 1:length(artists)) {
   
   # Step A: Find the ID
   search_url <- str_c(base_url, "?query=", str_replace_all(artists[i], " ", "+"), "&fmt=json")
-  Sys.sleep(1.1) 
+  #Sys.sleep(1.1) 
   search_res <- GET(search_url, user_agent("StOlaf_DataScience_Final"))
   search_details <- content(search_res, "parsed")
   artist_id <- search_details$artists[[1]]$id
@@ -58,12 +58,12 @@ for(i in 1:length(artists)) {
   # We include every possible resource: release-groups, works, recordings, and ALL relationships
   lookup_url <- str_c(base_url, artist_id, 
                       "?inc=release-groups+recordings+works+ratings+tags+artist-rels+label-rels+area-rels+place-rels+url-rels&fmt=json")
-  Sys.sleep(1.1)
+  #Sys.sleep(1.1)
   details <- content(GET(lookup_url, user_agent("StOlaf_DataScience_Final")), "parsed")
   
   # Step C: Filling the Master Row
   music_master[i, "Artist"]     <- artists[i]
-  music_master[i, "MBID"]       <- artist_id
+  music_master[i, "MBID"]       <- artist_id %||% "Unknown"
   music_master[i, "Type"]       <- details$type %||% "Unknown"
   music_master[i, "Gender"]     <- details$gender %||% "N/A"
   music_master[i, "Country"]    <- details$area$name %||% "Unknown"
