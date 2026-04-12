@@ -60,18 +60,19 @@ get_artist_data <- function(artist_name) {
     gender = artist_info$gender %||% "N/A",
     area   = artist_info$area$name %||% "Unknown",
     start_date = artist_info$`life-span`$begin %||% "N/A",
-    Genre = artist_info$other_tags%||% "NA"
+
     
   )
 }
 
 # 5 Artists
-target_artists <- c("The Beatles", "Taylor Swift", "Radiohead", "Daft Punk", "Miles Davis", "Shawn Mendes", "Nancy Ajram")
+target_artists <- c("The Beatles", "Taylor Swift", "Radiohead", "Daft Punk", "Miles Davis", "Shawn Mendes", "Nancy Ajram","")
 
 # Use map_dfr to run the function for all 5
 final_results <- map_dfr(target_artists, get_artist_data)
 
 print(final_results)
+
 
 
 ```
