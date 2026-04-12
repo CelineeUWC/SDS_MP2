@@ -1,29 +1,50 @@
 ---
 title: "MP2_APIscraping"
 author: "Celine_Al Miari_and_Yareli_Rosales"
-editor: visual
-editor_options: 
-chunk_output_type: console 
 format: pdf
+editor: visual
+editor_options:
+  chunk_output_type: console
 ---
 
 ```{r, message=FALSE}
+
+#| column: page
+#| echo: true
+
 #load packages
 library(tidyverse)
 library(httr)
 library(stringr)
 library(rvest)
 library(rlang)
+library(styler)
+
+
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  tidy = "styler"
+)
 ```
 
 ```{r}
-base_url <- "https://musicbrainz.org/ws/2/artist/"   #giving to the URl for public MusicBinz API
+
+#| column: page
+#| echo: true
 
 
-artists <- c("The Beatles", "Taylor Swift", "Radiohead",  "Daft Punk", "Miles Davis", "Shawn Mendes", "KAROL G", "Fairuz", "Nancy Ajram")             #the names of artists that we want to study
+# Giving to the URl for public MusicBinz API
+base_url <- "https://musicbrainz.org/ws/2/artist/"   
 
+# The names of artists that we want to study
+artists <- c("The Beatles", "Taylor Swift", "Radiohead",  "Daft Punk", 
+             "Miles Davis", "Shawn Mendes", "KAROL G", "Fairuz", "Nancy Ajram")             
+ 
 ##Function that will find artists in database
-artist_finder <- function(artists) {   #creating a function with the artists and the tibble
+
+artist_finder <- function(artists) {  
   
 
 # 1. Set up the Master Tibble
@@ -51,21 +72,27 @@ music_master <- tibble(
   Label_Count    = double(),
   Collab_Count   = double()
 )
-# 2. The Master Loop
+# 2. The Master For  Loop
 for(i in 1:length(artists)) {  #looping around the artists
   
   # Step A: Find the ID
-  search_url <- str_c(base_url, "?query=", str_replace_all(artists[i], " ", "+"), "&fmt=json")
-  Sys.sleep(1)                      #Politely scraping to reduce the number of requests per second
-  search_res <- GET(search_url, user_agent("StOlaf_DataScience_Final"))  # user_agent for Public API
-  search_details <- content(search_res, "parsed")   #get the content of artists parsed
-  artist_id <- search_details$artists[[1]]$id       #gets the first artists ID
+  search_url <- str_c(base_url, "?query=", 
+                      str_replace_all(artists[i], " ", "+"), "&fmt=json")
+  Sys.sleep(1)      # politely scraping 
+  # user_agent for Public API
+  search_res <- GET(search_url, user_agent("StOlaf_DataScience_Final"))  
+  #get the content of artists parsed
+  search_details <- content(search_res, "parsed")   
+  #gets the first artists ID
+  artist_id <- search_details$artists[[1]]$id       
   
   # Step B: The Lookup 
   lookup_url <- str_c(base_url, artist_id, 
-                      "?inc=release-groups+recordings+works+ratings+tags+artist-rels+label-rels+area-rels+place-rels+url-rels&fmt=json")    #looking for the URL for the artists ID
+     "?inc=release-groups+recordings+works+ratings+tags+artist-rels+label-rels+area-rels+place-rels+url-rels&fmt=json")    #looking for the URL for the artists ID
   #Sys.sleep(1.1)
-  details <- content(GET(lookup_url, user_agent("StOlaf_DataScience_Final")), "parsed")  #details artists
+  details <- content(GET(lookup_url, 
+                         user_agent("StOlaf_DataScience_Final")),
+                          "parsed")  #details artists
   
   # Step C: Filling the Master Row
   music_master[i, "Artist"]     <- artists[i]
@@ -79,27 +106,32 @@ for(i in 1:length(artists)) {  #looping around the artists
   music_master[i, "Is_Active"]  <- !as.logical(details$`life-span`$ended)
   
   # Quantitative Stats
-  music_master[i, "Album_Count"]     <- length(details$`release-groups`) ##API limits to only 25 
-  music_master[i, "Recording_Count"] <- length(details$recordings) #API limits to only 25 
-  music_master[i, "Work_Count"]      <- length(details$works) #API limits to only 25 
-  music_master[i, "User_Rating"]     <- as.numeric(details$rating$value %||% NA)
-  music_master[i, "Rating_Votes"]    <- as.numeric(details$rating$`votes-count` %||% 0)
+  #API limits to only 25 entities
+  music_master[i, "Album_Count"] <- length(details$`release-groups`)  
+  music_master[i, "Recording_Count"] <- length(details$recordings)  
+  music_master[i, "Work_Count"] <- length(details$works)
+  music_master[i, "User_Rating"] <- as.numeric(details$rating$value %||% NA)
+  music_master[i, "Rating_Votes"] <- as.numeric(details$rating$`votes-count` %||% 0)
   
   # Categorical Counts
   music_master[i, "Tag_Count"]   <- length(details$tags)
-  music_master[i, "Top_Genre"]   <- if(length(details$tags) > 0) details$tags[[1]]$name else NA
+  music_master[i, "Top_Genre"]   <- 
+    if(length(details$tags) > 0) details$tags[[1]]$name else NA
   
   # Relationship Counts (Calculating Label and Artist-Collab connections)
   if(!is.null(details$relations)) {
-    music_master[i, "Label_Count"]  <- sum(sapply(details$relations, function(x) x$`target-type` == "label"))
-    music_master[i, "Collab_Count"] <- sum(sapply(details$relations, function(x) x$`target-type` == "artist"))
+    music_master[i, "Label_Count"]  <- 
+      sum(sapply(details$relations, function(x) x$`target-type` == "label"))
+    music_master[i, "Collab_Count"] <- 
+      sum(sapply(details$relations, function(x) x$`target-type` == "artist"))
   } else {
     music_master[i, "Label_Count"]  <- 0
     music_master[i, "Collab_Count"] <- 0
   }
 }
 
-# After runnning the for loop we clean the date column to separate between birthdates(person) and start dates(groups)
+# After runnning the for loop we clean the date column 
+# to separate between birthdates(person) and start dates(groups)
 year <- as.numeric(substr(music_master$Start_Date, 1, 4))
 current_year <- 2026
 
@@ -108,6 +140,7 @@ music_master$Age <- ifelse(
   current_year - year,NA)
 
 music_master$Start_Date <- ifelse(
+  # grepl: a function used to search for pattern matches within a char vector
   grepl("^\\d{4}$", music_master$Start_Date),
   music_master$Start_Date,NA)
 
@@ -116,12 +149,10 @@ return(music_master)
 
 }
 
-
 ##Call the function on vector given
 music_master <- artist_finder(artists)
 
 ##Write tibble created into a csv file
 write.csv(music_master, "global_music.csv")
-
 
 ```
