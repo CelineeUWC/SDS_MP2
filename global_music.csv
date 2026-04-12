@@ -1,0 +1,13 @@
+"","Artist","MBID","Type","Gender","Country","Hometown","Start_Date","End_Date","Is_Active","Album_Count","Recording_Count","Work_Count","User_Rating","Rating_Votes","Top_Genre","Tag_Count","Label_Count","Collab_Count","Age"
+"1","The Beatles","b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d","Group","N/A","United Kingdom","Liverpool","1960","1970-04-10",FALSE,25,25,25,4.8,85,"60s",22,2,99,NA
+"2","Taylor Swift","20244d07-534f-4eff-b4d4-930878889970","Person","Female","United States","West Reading",NA,"N/A",TRUE,25,25,25,4.15,36,"2000s",29,11,39,37
+"3","Radiohead","a74b1b7f-71a5-4011-9441-d0b5e4122711","Group","N/A","United Kingdom","Abingdon-on-Thames","1991","N/A",TRUE,25,25,25,4.5,76,"alternative",27,3,32,NA
+"4","Daft Punk","056e4f3e-d505-4dad-8ec1-d04f521cbb56","Group","N/A","France","Paris","1993","2021-02-22",FALSE,25,25,25,4.65,27,"dance",17,6,5,NA
+"5","Miles Davis","561d854a-6a28-4aa7-8c99-323e6ce46c2a","Person","Male","United States","Alton",NA,"1991-09-28",FALSE,25,25,25,4.8,21,"bebop",11,1,24,100
+"6","Shawn Mendes","b7d92248-97e3-4450-8057-6fe06738f735","Person","Male","Canada","Pickering",NA,"N/A",TRUE,25,25,25,4,2,"2010s",9,0,1,28
+"7","KAROL G","de22adae-f8ac-414f-b653-b0162611bd60","Person","Female","Colombia","Medellín",NA,"N/A",TRUE,25,25,2,2.5,2,"latin",5,1,2,35
+"8","Fairuz","338bbb53-5b96-447a-9444-8906844a0790","Person","Female","Lebanon","Beirut",NA,"N/A",TRUE,25,25,10,3.5,2,"arabic",4,0,3,91
+"9","Nancy Ajram","c5fb9677-b013-4cd7-b89b-bb6e73ad851b","Person","Female","Lebanon","Beirut",NA,"N/A",TRUE,25,25,1,4.5,2,"pop",2,0,0,43
+"10","Elissa Khoury","8bd1e3c9-780a-4bbe-b59b-39e4aa2eca5a","Person","Female","Lebanon","Unknown",NA,"N/A",TRUE,17,25,2,5,1,"arabic",2,0,0,55
+"11","Wael Kfoury","e29614b4-0143-45bd-9feb-6f8129245d71","Person","Male","Lebanon","Zahlé",NA,"N/A",TRUE,20,25,0,NA,0,NA,0,0,0,52
+"12","Najwa Karam","2674597f-6c40-47cc-b980-67f94725f7a7","Person","Female","Lebanon","Zahlé",NA,"N/A",TRUE,25,25,0,4,1,NA,0,0,0,60
