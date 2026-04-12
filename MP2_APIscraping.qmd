@@ -3,6 +3,7 @@ title: "MP2_APIscraping"
 format: html
 ---
 
+First try:
 ```{r}
 library(tidyverse)
 library(httr)
@@ -77,4 +78,89 @@ print(final_results)
 
 
 ```
+Second code:
 
+```{r}
+# --- SETUP ---
+# (Assumes library(tidyverse), library(stringr), library(httr) are loaded)
+
+base_url <- "https://musicbrainz.org/ws/2/artist/"
+artists <- c("The Beatles", "Taylor Swift", "Radiohead", "Daft Punk", "Miles Davis")
+
+# 1. Set up the Master Tibble (Merging your 5x9 and 5x13 concepts)
+music_master <- tibble(
+  Artist         = character(),
+  MBID           = character(),
+  Type           = character(),
+  Gender         = character(),
+  Country        = character(),
+  Hometown       = character(),
+  Start_Date     = character(),
+  End_Date       = character(),
+  Is_Active      = logical(),
+  
+  # Quantitative / Statistical Variables
+  Album_Count    = double(),
+  Recording_Count= double(),
+  Work_Count     = double(),
+  User_Rating    = double(),
+  Rating_Votes   = double(),
+  
+  # Categorical / Multi-Resource Variables
+  Top_Genre      = character(),
+  Tag_Count      = double(),
+  Label_Count    = double(),
+  Collab_Count   = double()
+)
+
+# 2. The Master Loop
+for(i in 1:length(artists)) {
+  
+  # Step A: Find the ID
+  search_url <- str_c(base_url, "?query=", str_replace_all(artists[i], " ", "+"), "&fmt=json")
+  Sys.sleep(1.1) 
+  search_res <- GET(search_url, user_agent("StOlaf_DataScience_Final"))
+  search_details <- content(search_res, "parsed")
+  artist_id <- search_details$artists[[1]]$id
+  
+  # Step B: The "Kitchen Sink" Lookup
+  # We include every possible resource: release-groups, works, recordings, and ALL relationships
+  lookup_url <- str_c(base_url, artist_id, 
+                      "?inc=release-groups+recordings+works+ratings+tags+artist-rels+label-rels+area-rels+place-rels+url-rels&fmt=json")
+  Sys.sleep(1.1)
+  details <- content(GET(lookup_url, user_agent("StOlaf_DataScience_Final")), "parsed")
+  
+  # Step C: Filling the Master Row
+  music_master[i, "Artist"]     <- artists[i]
+  music_master[i, "MBID"]       <- artist_id
+  music_master[i, "Type"]       <- details$type %||% "Unknown"
+  music_master[i, "Gender"]     <- details$gender %||% "N/A"
+  music_master[i, "Country"]    <- details$area$name %||% "Unknown"
+  music_master[i, "Hometown"]   <- details$`begin-area`$name %||% "Unknown"
+  music_master[i, "Start_Date"] <- details$`life-span`$begin %||% "N/A"
+  music_master[i, "End_Date"]   <- details$`life-span`$end %||% "N/A"
+  music_master[i, "Is_Active"]  <- !as.logical(details$`life-span`$ended)
+  
+  # Quantitative Stats
+  music_master[i, "Album_Count"]     <- length(details$`release-groups`)
+  music_master[i, "Recording_Count"] <- length(details$recordings)
+  music_master[i, "Work_Count"]      <- length(details$works)
+  music_master[i, "User_Rating"]     <- as.numeric(details$rating$value %||% NA)
+  music_master[i, "Rating_Votes"]    <- as.numeric(details$rating$`votes-count` %||% 0)
+  
+  # Categorical / Resource Counts
+  music_master[i, "Tag_Count"]   <- length(details$tags)
+  music_master[i, "Top_Genre"]   <- if(length(details$tags) > 0) details$tags[[1]]$name else NA
+  
+  # Relationship Counts (Calculating Label and Artist-Collab connections)
+  if(!is.null(details$relations)) {
+    music_master[i, "Label_Count"]  <- sum(sapply(details$relations, function(x) x$`target-type` == "label"))
+    music_master[i, "Collab_Count"] <- sum(sapply(details$relations, function(x) x$`target-type` == "artist"))
+  } else {
+    music_master[i, "Label_Count"]  <- 0
+    music_master[i, "Collab_Count"] <- 0
+  }
+}
+music_master
+
+```
