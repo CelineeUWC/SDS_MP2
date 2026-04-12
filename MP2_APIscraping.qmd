@@ -151,8 +151,6 @@ for(i in 1:length(artists)) {
     music_master[i, "Collab_Count"] <- 0
   }
 }
-
-# 3. View your substantial dataset
-glimpse(music_master)
+music_master
 
 ```
