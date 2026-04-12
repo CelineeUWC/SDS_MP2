@@ -11,3 +11,87 @@
 "10","Elissa Khoury","8bd1e3c9-780a-4bbe-b59b-39e4aa2eca5a","Person","Female","Lebanon","Unknown",NA,"N/A",TRUE,17,25,2,5,1,"arabic",2,0,0,55
 "11","Wael Kfoury","e29614b4-0143-45bd-9feb-6f8129245d71","Person","Male","Lebanon","Zahlé",NA,"N/A",TRUE,20,25,0,NA,0,NA,0,0,0,52
 "12","Najwa Karam","2674597f-6c40-47cc-b980-67f94725f7a7","Person","Female","Lebanon","Zahlé",NA,"N/A",TRUE,25,25,0,4,1,NA,0,0,0,60
+"13","Ragheb Alama","375e25cc-67cf-4233-b7a7-f2129bdad9c5","Person","Male","Lebanon","Mont-Liban",NA,"N/A",TRUE,24,25,2,NA,0,NA,0,0,0,64
+"14","Myriam Fares","065dd56a-dead-4d33-9537-d0a8aea7c193","Person","Female","Lebanon","Lebanon",NA,"N/A",TRUE,7,25,0,4,1,NA,0,0,0,43
+"15","Assi El Hallani","2c0276e1-274e-426e-b14e-19b62ef9e8cf","Group","N/A","Unknown","Unknown",NA,"N/A",TRUE,1,11,0,NA,0,NA,0,0,2,NA
+"16","Haifa Wehbe","4aed3268-3863-4387-b9af-9edb5c4cd087","Person","Female","Lebanon","Unknown",NA,"N/A",TRUE,12,25,1,NA,0,"script-arab",1,0,0,50
+"17","Melhem Zein","999fa2f6-07d1-485e-b0fd-cdc396003494","Person","Male","Lebanon","Unknown",NA,"N/A",TRUE,6,25,0,NA,0,NA,0,0,0,44
+"18","Vicente Fernández","3b829056-d975-4ae7-be3c-20661ce980e8","Person","Male","Mexico","Guadalajara",NA,"2021-12-12",FALSE,25,25,25,4.4,5,"latin",2,0,2,86
+"19","Juan Gabriel","bc9b7500-0afc-41ba-a056-b0bc81669702","Person","Male","Mexico","Parácuaro",NA,"2016-08-28",FALSE,25,25,25,4.65,3,"canción melódica",8,1,2,76
+"20","Luis Miguel","90270118-8ed0-4446-bf97-8a09b3f9e8f3","Person","Male","Mexico","San Juan",NA,"N/A",TRUE,25,25,25,4.5,2,"bolero",10,0,1,56
+"21","Thalia","ae33ce8d-f41a-4f6b-b9c6-7859acbd04ef","Person","Female","Mexico","Ciudad de México",NA,"N/A",TRUE,25,25,25,4,5,"latin",2,0,4,55
+"22","Alejandro Fernández","772a8360-e81e-4647-92e2-195c19efddad","Person","Male","Mexico","Guadalajara",NA,"N/A",TRUE,25,25,19,5,2,"1990s",11,2,7,55
+"23","Selena","03746227-c9f9-4b3b-b2c6-9b31f79564f7","Person","Female","United States","Lake Jackson",NA,"1995-03-31",FALSE,25,25,25,4.6,5,"80s",11,0,4,55
+"24","Pedro Infante","35b17a3b-601b-4049-9bdd-4933d8ec4e10","Person","Male","Mexico","Sinaloa",NA,"1957-04-15",FALSE,25,25,25,5,1,"latin",2,0,3,109
+"25","José José","4f4a0d43-75d4-4c31-8d0d-c48e4c0efbf9","Person","Male","Mexico","Ciudad de México",NA,"2019-09-28",FALSE,25,25,16,5,1,"canción melódica",5,0,3,78
+"26","Gloria Trevi","f5b33d1b-e8bc-444e-bc5c-490473aa0f50","Person","Female","Mexico","Nuevo León",NA,"N/A",TRUE,25,25,8,NA,0,"latin",5,0,1,58
+"27","Marco Antonio Solís","006631f4-5214-49ff-a386-a064853d1a1e","Person","Male","Mexico","Unknown",NA,"N/A",TRUE,25,25,25,5,4,"ballad",4,0,4,67
+"28","Ana Gabriel","3c6a29ce-5056-4d07-9be5-81393956dd4e","Person","Female","Mexico","Guamúchil",NA,"N/A",TRUE,25,25,25,4.5,2,"latin",3,0,0,71
+"29","Christian Nodal","7f464f95-2410-4040-a88e-1dbe96f17fcd","Person","Male","Mexico","Sonora",NA,"N/A",TRUE,25,25,5,5,1,"mariachi",3,1,5,27
+"30","Peso Pluma","75e4f8ef-34c3-44fd-8467-88a7d9599f77","Person","Male","Mexico","Zapopan",NA,"N/A",TRUE,25,25,20,NA,0,"corrido tumbado",2,3,0,27
+"31","Natanael Cano","41925f30-8737-4fb8-af65-da918c0e98f3","Person","Male","Los Angeles","Hermosillo",NA,"N/A",TRUE,25,25,4,5,1,"corrido tumbado",3,0,0,25
+"32","Julieta Venegas","601f8530-9009-4f73-94fb-a355b4497b70","Person","Female","Mexico","Long Beach",NA,"N/A",TRUE,25,25,25,4.5,2,"alternative",7,0,1,56
+"33","Paulina Rubio","5938c629-1d06-480b-9780-859b153af11e","Person","Female","Mexico","Ciudad de México",NA,"N/A",TRUE,25,25,12,3.5,4,"arena rock",18,0,1,55
+"34","Carlos Rivera","63b7412b-54f1-4568-a6b8-25194699ca96","Person","Male","Mexico","Mexico",NA,"N/A",TRUE,25,25,11,3,2,"latin",3,0,1,40
+"35","Joan Sebastian","87c18952-956e-46bf-a4b9-8c13f5a4e3fa","Person","Male","Mexico","Juliantla",NA,"2015-07-13",FALSE,25,25,25,5,1,"latin",3,0,1,75
+"36","Banda MS","04bb4a12-08a3-463b-a0df-63c1fb658497","Group","N/A","Mexico","Mazatlan",NA,"N/A",TRUE,25,25,25,5,1,"banda sinaloense",4,1,39,23
+"37","Los Tigres del Norte","75cdc7ad-63b6-48b3-8de2-617d08a9ddf8","Group","N/A","United States","Mocorito","1968","N/A",TRUE,25,25,25,5,1,"latin",4,0,8,NA
+"38","Drake","9fff2f8a-21e6-47de-a2b8-7f449929d43f","Person","Male","Canada","Toronto",NA,"N/A",TRUE,25,25,25,4.3,10,"alternative r&b",16,4,11,40
+"39","Beyoncé","859d0860-d480-4efd-970c-c05d5f1776b8","Person","Female","United States","Houston",NA,"N/A",TRUE,25,25,25,4.35,18,"2000s",48,3,28,45
+"40","Kendrick Lamar","381086ea-f511-4aba-bdf9-71c753dc5077","Person","Male","United States","Compton",NA,"N/A",TRUE,25,25,25,4.25,11,"2010s",22,2,8,39
+"41","Rihanna","73e5e69d-3554-40d8-8516-00cb38737a1c","Person","Female","United States","Saint Michael",NA,"N/A",TRUE,25,25,25,3.8,30,"barbade",25,2,8,38
+"42","Eminem","b95ce3ff-3d05-4e87-9e01-c97b66af13d4","Person","Male","United States","St. Joseph",NA,"N/A",TRUE,25,25,25,4.2,46,"2008 universal fire victim",19,3,18,54
+"43","Ariana Grande","f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387","Person","Female","United States","Boca Raton",NA,"N/A",TRUE,25,25,25,4.35,15,"2020s",6,3,10,33
+"44","Billie Eilish","f4abc0b5-3f7a-4eff-8f78-ac078dbce533","Person","Female","United States","Los Angeles",NA,"N/A",TRUE,25,25,25,3.7,10,"2010s",20,4,7,25
+"45","The Weeknd","c8b03190-306c-4120-bb0b-6f2ebfc06ea9","Person","Male","Canada","Scarborough",NA,"N/A",TRUE,25,25,25,4.65,8,"2010s",9,3,5,36
+"46","Bruno Mars","afb680f2-b6eb-4cd7-a70b-a63b25c763d5","Person","Male","United States","Honolulu",NA,"N/A",TRUE,25,25,25,4.15,6,"2010s",8,1,7,41
+"47","Post Malone","b1e26560-60e5-4236-bbdb-9aa5a8d5ee19","Person","Male","United States","Syracuse",NA,"N/A",TRUE,25,25,25,4,2,"2010s",11,1,4,31
+"48","Travis Scott","e4a51f17-a57b-47b1-b37b-f552d0f8e9e6","Person","Male","United States","Houston",NA,"N/A",TRUE,25,25,25,5,1,"english",7,3,7,35
+"49","Lady Gaga","650e7db6-b795-4eb5-a702-5ea2fc46c848","Person","Female","United States","Upper East Side",NA,"N/A",TRUE,25,25,25,4.3,26,"2000s",20,5,9,40
+"50","Justin Bieber","e0140a67-e4d1-4f13-8a01-364355bee46e","Person","Male","Canada","London",NA,"N/A",TRUE,25,25,25,3.45,18,"2010s",7,1,8,32
+"51","Bad Bunny","89aa5ecb-59ad-46f5-b3eb-2d424e941f19","Person","Male","Puerto Rico","San Juan",NA,"N/A",TRUE,25,25,25,4.25,4,"hip hop",5,0,2,32
+"52","Olivia Rodrigo","6925db17-f35e-42f3-a4eb-84ee6bf5d4b0","Person","Female","United States","Murrieta",NA,"N/A",TRUE,25,25,25,4.4,10,"2020s",9,4,2,23
+"53","Doja Cat","5df62a88-cac9-490a-b62c-c7c88f4020f4","Person","Female","United States","Tarzana",NA,"N/A",TRUE,25,25,25,5,1,"2020s",13,1,6,31
+"54","SZA","272989c8-5535-492d-a25c-9f58803e027f","Person","Female","United States","St. Louis",NA,"N/A",TRUE,25,25,25,NA,0,"alternative r&b",8,1,0,37
+"55","Chris Brown","c234fa42-e6a6-443e-937e-2f4b073538a3","Person","Male","United States","Tappahannock",NA,"N/A",TRUE,25,25,25,2.3,7,"2000s",10,2,2,37
+"56","Kanye West","164f0d73-1234-4e2c-8743-d77bf2191051","Person","Male","United States","Atlanta",NA,"N/A",TRUE,25,25,25,4,36,"art pop",26,9,28,49
+"57","Future","48262e82-db9f-4a92-b650-dfef979b73ec","Person","Male","United States","Atlanta",NA,"N/A",TRUE,25,25,25,NA,0,"2010s",7,1,5,43
+"58","Nicki Minaj","1036b808-f58c-4a3e-b461-a2c4492ecf1b","Person","Female","United States","Saint James",NA,"N/A",TRUE,25,25,25,3.5,12,"2010s",12,4,11,44
+"59","Cardi B","2f3c4d70-0462-40da-bba3-0aec5772c556","Person","Female","United States","The Bronx",NA,"N/A",TRUE,25,25,25,3.4,5,"alternative pop",9,0,5,34
+"60","Lana Del Rey","b7539c32-53e7-4908-bda3-81449c367da6","Person","Female","United States","Manhattan",NA,"N/A",TRUE,25,25,25,4.55,11,"2010s",18,5,10,41
+"61","Ed Sheeran","b8a7c51f-362c-4dcb-a259-bc6e0095f0a6","Person","Male","United Kingdom","Halifax",NA,"N/A",TRUE,25,25,25,4.1,10,"dance-pop",11,3,6,35
+"62","Harry Styles","7eb1ce54-a355-41f9-8d68-e018b096d427","Person","Male","England","Redditch",NA,"N/A",TRUE,25,25,25,5,1,"2020s",9,2,5,32
+"63","Morgan Wallen","2077273e-eaa1-4f49-903c-f286ededecb9","Person","Male","United States","Sneedville",NA,"N/A",TRUE,25,25,25,NA,0,"2020s",3,1,0,33
+"64","Luke Combs","c20ee61f-071f-4e65-9c81-45ee931a54ce","Person","Male","United States","Charlotte",NA,"N/A",TRUE,25,25,25,4,1,"2010s",3,0,2,36
+"65","Shawn Mendes","b7d92248-97e3-4450-8057-6fe06738f735","Person","Male","Canada","Pickering",NA,"N/A",TRUE,25,25,25,4,2,"2010s",9,0,1,28
+"66","Selena Gomez","e4bc69e2-a064-4f93-ada1-f7f209cc1cc3","Person","Female","United States","Grand Prairie",NA,"N/A",TRUE,25,25,25,4,2,"2010s",16,1,7,34
+"67","Michael Jackson","f27ec8db-af05-4f36-916e-3d57f91ecf5e","Person","Male","United States","Gary",NA,"2009-06-25",FALSE,25,25,25,4.35,48,"american",14,3,22,68
+"68","Madonna","79239441-bfd5-4981-a70c-55c3f15c1287","Person","Female","United States","Bay City",NA,"N/A",TRUE,25,25,25,4.4,41,"adult contemporary",22,4,13,68
+"69","Prince","070d193a-845c-479f-980e-bef15710653e","Person","Male","United States","Minneapolis",NA,"2016-04-21",FALSE,25,25,25,4.45,14,"composers",21,13,56,68
+"70","Whitney Houston","0307edfc-437c-4b48-8700-80680e66a228","Person","Female","United States","Newark",NA,"2012-02-11",FALSE,25,25,25,4.3,7,"adult contemporary",15,3,8,63
+"71","Adele","cc2c9c3c-b7bc-4b8b-84d8-4fbd8779e493","Person","Female","United Kingdom","Tottenham",NA,"N/A",TRUE,25,25,25,4.4,12,"2010s",9,1,5,38
+"72","Shakira","bf24ca37-25f4-4e34-9aec-460b94364cfc","Person","Female","Colombia","Barranquilla",NA,"N/A",TRUE,25,25,25,4.85,13,"latin",4,0,5,49
+"73","J Balvin","5bdeb32d-56a5-4b6d-a768-264101fa0a0a","Person","Male","Colombia","Medellín",NA,"N/A",TRUE,25,25,25,3.65,6,"hip hop",5,1,1,41
+"74","Ozuna","f2651b63-a44d-4d1d-ba64-d981d971ecd1","Person","Male","Puerto Rico","San Juan",NA,"N/A",TRUE,25,25,12,4,1,"latin",5,0,0,34
+"75","Daddy Yankee","2f522f5c-111c-4ce8-8bd0-d82e97c227ad","Person","Male","Puerto Rico","San Juan",NA,"N/A",TRUE,25,25,25,4.15,6,"dance",13,2,1,49
+"76","Rosalía","25f3abd9-63b5-471a-bd25-feb9672dfa11","Person","Female","Spain","Sant Cugat del Vallès",NA,"N/A",TRUE,25,25,25,5,2,"english",10,0,4,34
+"77","BTS","0d79fe8e-ba27-4859-bb8c-2f255f346853","Group","N/A","South Korea","Seoul",NA,"N/A",TRUE,25,25,25,4.75,15,"2010s",7,5,7,13
+"78","BLACKPINK","48646387-1664-4c9a-9139-9bfd091b823c","Group","N/A","South Korea","Seoul",NA,"N/A",TRUE,25,25,25,5,1,"2010s",9,1,5,10
+"79","Coldplay","cc197bad-dc9c-440d-a5b5-d52ba2e14234","Group","N/A","United Kingdom","London",NA,"N/A",TRUE,25,25,25,4.05,47,"alternative rock",11,3,10,30
+"80","U2","a3cb23fc-acd3-4ce0-8f36-1e5aa6a18432","Group","N/A","Ireland","Dublin","1976","N/A",TRUE,25,25,25,4.25,34,"1980",28,1,33,NA
+"81","Metallica","65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab","Group","N/A","United States","Los Angeles",NA,"N/A",TRUE,25,25,25,4.15,73,"american",5,4,57,45
+"82","The Rolling Stones","b071f9fa-14b0-4217-8e97-eb41da73f598","Group","N/A","United Kingdom","London","1962","N/A",TRUE,25,25,25,4.65,23,"blues",10,2,43,NA
+"83","Elvis Presley","01809552-4f87-45b0-afff-2c6f0730a3be","Person","Male","United States","Tupelo",NA,"1977-08-16",FALSE,25,25,25,4.2,14,"actors",20,3,40,91
+"84","Frank Sinatra","197450cd-0124-4164-b723-3c22dd16494d","Person","Male","United States","Hoboken",NA,"1998-05-14",FALSE,25,25,25,4.1,10,"acting",19,2,16,111
+"85","Bob Marley","ed2ac1e9-d51d-4eff-a2c2-85e81abd6360","Person","Male","Jamaica","Nine Mile",NA,"1981-05-11",FALSE,25,25,25,4.7,14,"jamaican",7,0,21,81
+"86","Dua Lipa","6f1a58bf-9b1b-49cf-a44a-6cefad7ae04f","Person","Female","United Kingdom","London",NA,"N/A",TRUE,25,25,25,4.65,6,"2020s",23,4,4,31
+"87","Imagine Dragons","012151a8-0f9a-44c9-997f-ebd68b5389f9","Group","N/A","United States","Las Vegas","2008","N/A",TRUE,25,25,25,4.2,9,"alternative pop",9,1,10,NA
+"88","The Chainsmokers","91a81925-92f9-4fc9-b897-93cf01226282","Group","N/A","United States","New York","2012","N/A",TRUE,25,25,25,4.5,2,"2010s",8,0,3,NA
+"89","Maroon 5","0ab49580-c84f-44d4-875f-d83760ea2cfe","Group","N/A","United States","Los Angeles",NA,"N/A",TRUE,25,25,25,3.15,15,"2010s",18,7,24,25
+"90","Sam Smith","5a85c140-dcf9-4dd2-b2c8-aff0471549f3","Person","Non-binary","United Kingdom","London",NA,"N/A",TRUE,25,25,25,5,1,"alliteration",11,2,1,34
+"91","Alicia Keys","8ef1df30-ae4f-4dbd-9351-1a32b208a01e","Person","Female","United States","Manhattan",NA,"N/A",TRUE,25,25,25,4.5,12,"adult contemporary r&b",18,3,6,45
+"92","John Legend","75a72702-a5ef-4513-bca5-c5b944903546","Person","Male","United States","Springfield",NA,"N/A",TRUE,25,25,25,4.65,3,"american",11,4,7,48
+"93","Rauw Alejandro","197b70c7-8910-4030-ad03-632d82aa40e3","Person","Male","Puerto Rico","San Juan",NA,"N/A",TRUE,25,25,10,5,1,"hip hop",5,0,3,33
+"94","Feid","eaee97f6-f2e4-414a-966c-f31a1fb4696a","Person","Male","Colombia","Medellín",NA,"N/A",TRUE,25,25,2,4.5,2,"latin",4,0,0,34
+"95","Anitta","d606b860-cc03-4959-a3fd-3a24bccf2560","Person","Female","Brazil","Rio de Janeiro",NA,"N/A",TRUE,25,25,25,NA,0,"funk",6,3,3,33
+"96","Elton John","b83bc61f-8451-4a5d-8b8e-7e9ed295e822","Person","Male","United Kingdom","Pinner",NA,"N/A",TRUE,25,25,25,4.2,15,"adult contemporary",12,6,21,79
