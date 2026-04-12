@@ -78,8 +78,8 @@ print(final_results)
 
 
 ```
-Second code:
 
+Second code:
 ```{r}
 # --- SETUP ---
 # (Assumes library(tidyverse), library(stringr), library(httr) are loaded)
@@ -161,6 +161,16 @@ for(i in 1:length(artists)) {
     music_master[i, "Collab_Count"] <- 0
   }
 }
+year <- as.numeric(substr(music_master$Start_Date, 1, 4))
+current_year <- 2026
+
+music_master$Age <- ifelse(
+  grepl("^\\d{4}-", music_master$Start_Date),
+  current_year - year,NA)
+
+music_master$Start_Date <- ifelse(
+  grepl("^\\d{4}$", music_master$Start_Date),
+  music_master$Start_Date,NA )
 music_master
 
 ```
