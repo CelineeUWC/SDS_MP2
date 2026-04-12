@@ -15,9 +15,12 @@ Second code:
 ```{r}
 
 base_url <- "https://musicbrainz.org/ws/2/artist/"
-artists <- c("The Beatles", "Taylor Swift", "Radiohead", "Daft Punk", "Miles Davis", "Shawn Mendes", "KAROL G", "Fairuz", "Nancy Ajram", "Elissa Khoury", "Wael Kfoury", "Najwa Karam", "Ragheb Alama", "Myriam Fares", "Assi El Hallani", "Haifa Wehbe", "Melhem Zein", "Vicente Fernández", "Juan Gabriel", "Luis Miguel", "Thalia", "Alejandro Fernández", "Selena",, "Pedro Infante", "José José", "Gloria Trevi", "Marco Antonio Solís", "Ana Gabriel", "Christian Nodal", "Peso Pluma", "Natanael Cano", "Julieta Venegas", "Paulina Rubio", "Carlos Rivera", "Joan Sebastian", "Banda MS", "Los Tigres del Norte", "Drake", "Beyoncé", "Kendrick Lamar", "Rihanna", "Eminem", "Ariana Grande", "Billie Eilish", "The Weeknd", "Bruno Mars", "Post Malone", "Travis Scott", "Lady Gaga", "Justin Bieber", "Bad Bunny", "Olivia Rodrigo", "Doja Cat", "SZA", "Chris Brown", "Kanye West", "Future", "Nicki Minaj", "Cardi B", "Lana Del Rey", "Ed Sheeran", "Harry Styles", "Morgan Wallen", "Luke Combs", "Shawn Mendes", "Selena Gomez", "Michael Jackson", "Madonna", "Prince", "Whitney Houston", "Adele", "Shakira", "J Balvin", "Ozuna", "Daddy Yankee", "Rosalía", "BTS", "BLACKPINK", "Coldplay", "U2", "Metallica", "The Rolling Stones", "Elvis Presley", "Frank Sinatra", "Bob Marley", "Dua Lipa", "Imagine Dragons", "The Chainsmokers", "Maroon 5", "Sam Smith", "Alicia Keys", "John Legend", "Rauw Alejandro", "Feid", "Anitta", "Elton John")
+
+artists <- c("The Beatles", "Taylor Swift", "Radiohead", "Daft Punk", "Miles Davis", "Shawn Mendes", "KAROL G", "Fairuz")
 
 # 1. Set up the Master Tibble (Merging your 5x9 and 5x13 concepts)
+artist_finder <- function(artists) {
+  
 music_master <- tibble(
   Artist         = character(),
   MBID           = character(),
@@ -102,6 +105,10 @@ music_master$Age <- ifelse(
 music_master$Start_Date <- ifelse(
   grepl("^\\d{4}$", music_master$Start_Date),
   music_master$Start_Date,NA)
+
+}
+
+artist_finder(artists)
 
 write.csv(music_master, "Global_music.csv")
 ```
