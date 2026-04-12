@@ -1,10 +1,14 @@
 ---
-title: "Celine_Al Miari_and_Yareli_Rosales_MP2_APIscraping"
-author: "Celine_Al Miari_and_Yareli_Rosales" 
+title: "MP2_APIscraping"
+author: "Celine_Al Miari_and_Yareli_Rosales"
+editor: visual
+editor_options: 
+chunk_output_type: console 
 format: pdf
 ---
 
-```{r}
+```{r, message=FALSE}
+#load packages
 library(tidyverse)
 library(httr)
 library(stringr)
@@ -13,13 +17,13 @@ library(rlang)
 ```
 
 ```{r}
-base_url <- "https://musicbrainz.org/ws/2/artist/"
+base_url <- "https://musicbrainz.org/ws/2/artist/"   #giving to the URl for public MusicBinz API
 
 
-artists <- c("The Beatles", "Taylor Swift", "Radiohead",  "Daft Punk", "Miles Davis", "Shawn Mendes", "KAROL G", "Fairuz", "Nancy Ajram", "Elissa Khoury", "Wael Kfoury", "Najwa Karam", "Ragheb Alama", "Myriam Fares", "Assi El Hallani", "Haifa Wehbe", "Melhem Zein", "Vicente Fernández", "Juan Gabriel", "Luis Miguel", "Thalia", "Alejandro Fernández", "Selena", "Pedro Infante", "José José", "Gloria Trevi", "Marco Antonio Solís", "Ana Gabriel", "Christian Nodal", "Peso Pluma", "Natanael Cano", "Julieta Venegas", "Paulina Rubio", "Carlos Rivera", "Joan Sebastian", "Banda MS", "Los Tigres del Norte", "Drake", "Beyoncé", "Kendrick Lamar", "Rihanna", "Eminem", "Ariana Grande", "Billie Eilish", "The Weeknd", "Bruno Mars", "Post Malone", "Travis Scott", "Lady Gaga", "Justin Bieber", "Bad Bunny", "Olivia Rodrigo", "Doja Cat", "SZA", "Chris Brown", "Kanye West", "Future", "Nicki Minaj", "Cardi B", "Lana Del Rey", "Ed Sheeran", "Harry Styles", "Morgan Wallen", "Luke Combs", "Shawn Mendes", "Selena Gomez", "Michael Jackson", "Madonna", "Prince", "Whitney Houston", "Adele", "Shakira", "J Balvin", "Ozuna", "Daddy Yankee", "Rosalía", "BTS", "BLACKPINK", "Coldplay", "U2", "Metallica", "The Rolling Stones", "Elvis Presley", "Frank Sinatra", "Bob Marley", "Dua Lipa", "Imagine Dragons", "The Chainsmokers", "Maroon 5", "Sam Smith", "Alicia Keys", "John Legend", "Rauw Alejandro", "Feid", "Anitta", "Elton John")
+artists <- c("The Beatles", "Taylor Swift", "Radiohead",  "Daft Punk", "Miles Davis", "Shawn Mendes", "KAROL G", "Fairuz", "Nancy Ajram")             #the names of artists that we want to study
 
 ##Function that will find artists in database
-artist_finder <- function(artists, music_master) {
+artist_finder <- function(artists) {   #creating a function with the artists and the tibble
   
 
 # 1. Set up the Master Tibble
@@ -48,20 +52,20 @@ music_master <- tibble(
   Collab_Count   = double()
 )
 # 2. The Master Loop
-for(i in 1:length(artists)) {
+for(i in 1:length(artists)) {  #looping around the artists
   
   # Step A: Find the ID
   search_url <- str_c(base_url, "?query=", str_replace_all(artists[i], " ", "+"), "&fmt=json")
-  Sys.sleep(1.1) #Politely scraping to reduce the number of requests per second
-  search_res <- GET(search_url, user_agent("StOlaf_DataScience_Final"))
-  search_details <- content(search_res, "parsed")
-  artist_id <- search_details$artists[[1]]$id
+  Sys.sleep(1)                      #Politely scraping to reduce the number of requests per second
+  search_res <- GET(search_url, user_agent("StOlaf_DataScience_Final"))  # user_agent for Public API
+  search_details <- content(search_res, "parsed")   #get the content of artists parsed
+  artist_id <- search_details$artists[[1]]$id       #gets the first artists ID
   
-  # Step B: The "Kitchen Sink" Lookup
+  # Step B: The Lookup 
   lookup_url <- str_c(base_url, artist_id, 
-                      "?inc=release-groups+recordings+works+ratings+tags+artist-rels+label-rels+area-rels+place-rels+url-rels&fmt=json")
+                      "?inc=release-groups+recordings+works+ratings+tags+artist-rels+label-rels+area-rels+place-rels+url-rels&fmt=json")    #looking for the URL for the artists ID
   #Sys.sleep(1.1)
-  details <- content(GET(lookup_url, user_agent("StOlaf_DataScience_Final")), "parsed")
+  details <- content(GET(lookup_url, user_agent("StOlaf_DataScience_Final")), "parsed")  #details artists
   
   # Step C: Filling the Master Row
   music_master[i, "Artist"]     <- artists[i]
@@ -108,18 +112,16 @@ music_master$Start_Date <- ifelse(
   music_master$Start_Date,NA)
 
 
-##Write tibble created into a csv file
-write.csv(music_master, "global_music.csv")
-
 return(music_master)
 
 }
 
 
 ##Call the function on vector given
-artist_finder(artists, music_master)
+music_master <- artist_finder(artists)
 
-
+##Write tibble created into a csv file
+write.csv(music_master, "global_music.csv")
 
 
 ```
