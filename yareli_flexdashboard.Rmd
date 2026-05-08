@@ -1,0 +1,177 @@
+---
+title: "Global Artists"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    theme: 
+      version: 5
+---
+
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stringr)
+library(rvest)
+library(httr)
+library(ggplot2)
+library(readr)
+library(plotly)
+library(flexdashboard)
+library(ggthemes)
+library(shinyWidgets)
+library(reshape2)
+library(gt)
+
+
+
+
+# Packages required for maps 
+library(tidyverse)
+library(mdsr)      # package associated with our MDSR book
+library(poliscidata)
+library(htmltools)
+library(glue)
+library(maps)
+library(viridis)
+library(statebins)
+library(leaflet)
+```
+
+
+```{r, echo = FALSE}
+artists <- read_csv("global_music.csv")
+```
+
+
+About
+==========================
+
+Column {data-width = 400}
+-------------------------
+
+#### Background Information
+
+
+Our data was acquired though the [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API) and the files for this can be
+found in our [GitHub](https://github.com/CelineeUWC/SDS_MP2).
+
+
+
+
+Maps
+==========================
+
+Column {data-width = 400}
+-------------------------
+
+*Lets take a look at some maps*
+
+
+```{r, echo = FALSE}
+
+#here i got the average coordinate for each country 
+country_coords <- map_data("world") |>
+  
+  group_by(region) |>
+  
+  summarize(
+    Longitude = mean(long, na.rm = TRUE),
+    Latitude = mean(lat, na.rm = TRUE)
+  )
+
+head(country_coords)
+
+
+#here i cleaned the country names 
+
+```
+
+```{r}
+
+artists <- artists |>
+  mutate(
+    Country = recode(
+      Country,
+      "united states" = "usa",
+      "united kingdom" = "uk",
+      "england" = "uk",
+      "los angeles" = "usa",
+      
+    )
+  )
+
+
+```
+
+```{r}
+# more name cleaning 
+artists$Country <- tolower(artists$Country)
+country_coords$region <- tolower(country_coords$region)
+```
+
+
+```{r}
+
+artists_map <- artists %>%
+  
+  left_join(
+    country_coords,
+    by = c("Country" = "region")
+  )
+```
+
+
+
+
+
+
+
+
+
+Column
+---------------------------------
+currently my artits data does not have the longigute and latitude  i need to get it form some where else 
+
+
+
+```{r}
+ggplot(artists_map, aes(Longitude, Latitude))+
+  geom_polygon(color = "white") +
+  coord_fixed(1.3) +
+  scale_fill_viridis_c(na.value = "gray90") +
+  labs(
+    title = "Global Music Artists by Country",
+    fill = "Artists"
+  ) +
+  theme_minimal()
+```
+
+
+
+
+
+Column
+-------------------------
+
+Here we will attempt to join map data with the global music artists data that 
+we acquired through the MusicBrainz API database.
+
+
+Artist Analysis
+==========================
+
+
+
+
+Collabs
+==========================
+
+
+Conclusion
+==========================
+
+
+
+
+
