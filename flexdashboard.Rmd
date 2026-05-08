@@ -1,0 +1,120 @@
+---
+title: "Global Artists"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    theme: 
+      version: 5
+---
+
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stringr)
+library(rvest)
+library(httr)
+library(ggplot2)
+library(readr)
+library(plotly)
+library(flexdashboard)
+library(ggthemes)
+library(shinyWidgets)
+library(reshape2)
+library(gt)
+
+
+
+
+# Packages required for maps 
+library(tidyverse)
+library(mdsr)      # package associated with our MDSR book
+library(poliscidata)
+library(htmltools)
+library(glue)
+library(maps)
+library(viridis)
+library(statebins)
+library(leaflet)
+```
+
+
+```{r, echo = FALSE}
+artists <- read_csv("global_music.csv")
+```
+
+
+About
+==========================
+
+Column {data-width = 400}
+-------------------------
+
+#### Background Information
+
+
+Our data was acquired though the [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API) and the files for this can be
+found in our [GitHub](https://github.com/CelineeUWC/SDS_MP2).
+
+
+
+
+Maps
+==========================
+
+Column {data-width = 400}
+-------------------------
+
+*Lets take a look at some maps*
+
+
+```{r, echo = FALSE}
+# count artists per country
+artist_counts <- artists %>%
+  count(Country)
+
+# get world map data
+world <- map_data("world")
+
+# here join map data with artist counts
+map_join <- world %>%
+  full_join(artist_counts, by = c("region" = "Country"))
+
+# Plot
+ggplot(map_join, aes(long, lat, group = group, fill = n)) +
+  geom_polygon(color = "white") +
+  coord_fixed(1.3) +
+  scale_fill_viridis_c(na.value = "gray90") +
+  labs(
+    title = "Global Music Artists by Country",
+    fill = "Artists"
+  ) +
+  theme_minimal()
+```
+
+
+
+Column
+-------------------------
+
+Here we will attempt to join map data with the global music artists data that 
+we acquired through the MusicBrainz API database.
+
+
+Artist Analysis
+==========================
+
+
+
+
+Collabs
+==========================
+
+
+Conclusion
+==========================
+
+
+
+
+
