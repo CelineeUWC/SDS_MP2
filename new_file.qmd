@@ -4,7 +4,3 @@ format: html
 editor: visual
 ---
 
-first commit
-fjrpr
-
-fhrorr sp
