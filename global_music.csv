@@ -1,5 +1,5 @@
 "","Artist","MBID","Type","Gender","Country","Hometown","Start_Date","End_Date","Is_Active","Album_Count","Recording_Count","Work_Count","User_Rating","Rating_Votes","Top_Genre","Tag_Count","Label_Count","Collab_Count","Age"
-"1","The Beatles","b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d","Group","N/A","United Kingdom","Liverpool","1960","1970-04-10",FALSE,25,25,25,4.8,85,"60s",22,2,99,NA
+"1","The Beatles","b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d","Group","N/A","United Kingdom","Liverpool","1960","1970-04-10",FALSE,25,25,25,4.8,85,"60s",22,2,101,NA
 "2","Taylor Swift","20244d07-534f-4eff-b4d4-930878889970","Person","Female","United States","West Reading",NA,"N/A",TRUE,25,25,25,4.15,36,"2000s",29,11,39,37
 "3","Radiohead","a74b1b7f-71a5-4011-9441-d0b5e4122711","Group","N/A","United Kingdom","Abingdon-on-Thames","1991","N/A",TRUE,25,25,25,4.5,76,"alternative",27,3,32,NA
 "4","Daft Punk","056e4f3e-d505-4dad-8ec1-d04f521cbb56","Group","N/A","France","Paris","1993","2021-02-22",FALSE,25,25,25,4.65,27,"dance",17,6,5,NA
@@ -15,7 +15,7 @@
 "14","Myriam Fares","065dd56a-dead-4d33-9537-d0a8aea7c193","Person","Female","Lebanon","Lebanon",NA,"N/A",TRUE,7,25,0,4,1,NA,0,0,0,43
 "15","Assi El Hallani","2c0276e1-274e-426e-b14e-19b62ef9e8cf","Group","N/A","Unknown","Unknown",NA,"N/A",TRUE,1,11,0,NA,0,NA,0,0,2,NA
 "16","Haifa Wehbe","4aed3268-3863-4387-b9af-9edb5c4cd087","Person","Female","Lebanon","Unknown",NA,"N/A",TRUE,12,25,1,NA,0,"script-arab",1,0,0,50
-"17","Melhem Zein","999fa2f6-07d1-485e-b0fd-cdc396003494","Person","Male","Lebanon","Unknown",NA,"N/A",TRUE,6,25,0,NA,0,NA,0,0,0,44
+"17","Melhem Zein","999fa2f6-07d1-485e-b0fd-cdc396003494","Person","Male","Lebanon","Unknown",NA,"N/A",TRUE,8,25,0,NA,0,NA,0,0,0,44
 "18","Vicente Fernández","3b829056-d975-4ae7-be3c-20661ce980e8","Person","Male","Mexico","Guadalajara",NA,"2021-12-12",FALSE,25,25,25,4.4,5,"latin",2,0,2,86
 "19","Juan Gabriel","bc9b7500-0afc-41ba-a056-b0bc81669702","Person","Male","Mexico","Parácuaro",NA,"2016-08-28",FALSE,25,25,25,4.65,3,"canción melódica",8,1,2,76
 "20","Luis Miguel","90270118-8ed0-4446-bf97-8a09b3f9e8f3","Person","Male","Mexico","San Juan",NA,"N/A",TRUE,25,25,25,4.5,2,"bolero",10,0,1,56
@@ -27,7 +27,7 @@
 "26","Gloria Trevi","f5b33d1b-e8bc-444e-bc5c-490473aa0f50","Person","Female","Mexico","Nuevo León",NA,"N/A",TRUE,25,25,8,NA,0,"latin",5,0,1,58
 "27","Marco Antonio Solís","006631f4-5214-49ff-a386-a064853d1a1e","Person","Male","Mexico","Unknown",NA,"N/A",TRUE,25,25,25,5,4,"ballad",4,0,4,67
 "28","Ana Gabriel","3c6a29ce-5056-4d07-9be5-81393956dd4e","Person","Female","Mexico","Guamúchil",NA,"N/A",TRUE,25,25,25,4.5,2,"latin",3,0,0,71
-"29","Christian Nodal","7f464f95-2410-4040-a88e-1dbe96f17fcd","Person","Male","Mexico","Sonora",NA,"N/A",TRUE,25,25,5,5,1,"mariachi",3,1,5,27
+"29","Christian Nodal","7f464f95-2410-4040-a88e-1dbe96f17fcd","Unknown","N/A","Unknown","Unknown",NA,"N/A",NA,0,0,0,NA,0,NA,0,0,0,NA
 "30","Peso Pluma","75e4f8ef-34c3-44fd-8467-88a7d9599f77","Person","Male","Mexico","Zapopan",NA,"N/A",TRUE,25,25,20,NA,0,"corrido tumbado",2,3,0,27
 "31","Natanael Cano","41925f30-8737-4fb8-af65-da918c0e98f3","Person","Male","Los Angeles","Hermosillo",NA,"N/A",TRUE,25,25,4,5,1,"corrido tumbado",3,0,0,25
 "32","Julieta Venegas","601f8530-9009-4f73-94fb-a355b4497b70","Person","Female","Mexico","Long Beach",NA,"N/A",TRUE,25,25,25,4.5,2,"alternative",7,0,1,56
@@ -41,7 +41,7 @@
 "40","Kendrick Lamar","381086ea-f511-4aba-bdf9-71c753dc5077","Person","Male","United States","Compton",NA,"N/A",TRUE,25,25,25,4.25,11,"2010s",22,2,8,39
 "41","Rihanna","73e5e69d-3554-40d8-8516-00cb38737a1c","Person","Female","United States","Saint Michael",NA,"N/A",TRUE,25,25,25,3.8,30,"barbade",25,2,8,38
 "42","Eminem","b95ce3ff-3d05-4e87-9e01-c97b66af13d4","Person","Male","United States","St. Joseph",NA,"N/A",TRUE,25,25,25,4.2,46,"2008 universal fire victim",19,3,18,54
-"43","Ariana Grande","f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387","Person","Female","United States","Boca Raton",NA,"N/A",TRUE,25,25,25,4.35,15,"2020s",6,3,10,33
+"43","Ariana Grande","f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387","Person","Female","United States","Boca Raton",NA,"N/A",TRUE,25,25,25,4.35,15,"2020s",6,4,10,33
 "44","Billie Eilish","f4abc0b5-3f7a-4eff-8f78-ac078dbce533","Person","Female","United States","Los Angeles",NA,"N/A",TRUE,25,25,25,3.7,10,"2010s",20,4,7,25
 "45","The Weeknd","c8b03190-306c-4120-bb0b-6f2ebfc06ea9","Person","Male","Canada","Scarborough",NA,"N/A",TRUE,25,25,25,4.65,8,"2010s",9,3,5,36
 "46","Bruno Mars","afb680f2-b6eb-4cd7-a70b-a63b25c763d5","Person","Male","United States","Honolulu",NA,"N/A",TRUE,25,25,25,4.15,6,"2010s",8,1,7,41
@@ -54,7 +54,7 @@
 "53","Doja Cat","5df62a88-cac9-490a-b62c-c7c88f4020f4","Person","Female","United States","Tarzana",NA,"N/A",TRUE,25,25,25,5,1,"2020s",13,1,6,31
 "54","SZA","272989c8-5535-492d-a25c-9f58803e027f","Person","Female","United States","St. Louis",NA,"N/A",TRUE,25,25,25,NA,0,"alternative r&b",8,1,0,37
 "55","Chris Brown","c234fa42-e6a6-443e-937e-2f4b073538a3","Person","Male","United States","Tappahannock",NA,"N/A",TRUE,25,25,25,2.3,7,"2000s",10,2,2,37
-"56","Kanye West","164f0d73-1234-4e2c-8743-d77bf2191051","Person","Male","United States","Atlanta",NA,"N/A",TRUE,25,25,25,4,36,"art pop",26,9,28,49
+"56","Kanye West","164f0d73-1234-4e2c-8743-d77bf2191051","Person","Male","United States","Atlanta",NA,"N/A",TRUE,25,25,25,4,36,"african american musicians",32,9,29,49
 "57","Future","48262e82-db9f-4a92-b650-dfef979b73ec","Person","Male","United States","Atlanta",NA,"N/A",TRUE,25,25,25,NA,0,"2010s",7,1,5,43
 "58","Nicki Minaj","1036b808-f58c-4a3e-b461-a2c4492ecf1b","Person","Female","United States","Saint James",NA,"N/A",TRUE,25,25,25,3.5,12,"2010s",12,4,11,44
 "59","Cardi B","2f3c4d70-0462-40da-bba3-0aec5772c556","Person","Female","United States","The Bronx",NA,"N/A",TRUE,25,25,25,3.4,5,"alternative pop",9,0,5,34
@@ -66,7 +66,7 @@
 "65","Shawn Mendes","b7d92248-97e3-4450-8057-6fe06738f735","Person","Male","Canada","Pickering",NA,"N/A",TRUE,25,25,25,4,2,"2010s",9,0,1,28
 "66","Selena Gomez","e4bc69e2-a064-4f93-ada1-f7f209cc1cc3","Person","Female","United States","Grand Prairie",NA,"N/A",TRUE,25,25,25,4,2,"2010s",16,1,7,34
 "67","Michael Jackson","f27ec8db-af05-4f36-916e-3d57f91ecf5e","Person","Male","United States","Gary",NA,"2009-06-25",FALSE,25,25,25,4.35,48,"american",14,3,22,68
-"68","Madonna","79239441-bfd5-4981-a70c-55c3f15c1287","Person","Female","United States","Bay City",NA,"N/A",TRUE,25,25,25,4.4,41,"adult contemporary",22,4,13,68
+"68","Madonna","79239441-bfd5-4981-a70c-55c3f15c1287","Person","Female","United States","Bay City",NA,"N/A",TRUE,25,25,25,4.4,42,"adult contemporary",22,4,13,68
 "69","Prince","070d193a-845c-479f-980e-bef15710653e","Person","Male","United States","Minneapolis",NA,"2016-04-21",FALSE,25,25,25,4.45,14,"composers",21,13,56,68
 "70","Whitney Houston","0307edfc-437c-4b48-8700-80680e66a228","Person","Female","United States","Newark",NA,"2012-02-11",FALSE,25,25,25,4.3,7,"adult contemporary",15,3,8,63
 "71","Adele","cc2c9c3c-b7bc-4b8b-84d8-4fbd8779e493","Person","Female","United Kingdom","Tottenham",NA,"N/A",TRUE,25,25,25,4.4,12,"2010s",9,1,5,38
@@ -92,6 +92,6 @@
 "91","Alicia Keys","8ef1df30-ae4f-4dbd-9351-1a32b208a01e","Person","Female","United States","Manhattan",NA,"N/A",TRUE,25,25,25,4.5,12,"adult contemporary r&b",18,3,6,45
 "92","John Legend","75a72702-a5ef-4513-bca5-c5b944903546","Person","Male","United States","Springfield",NA,"N/A",TRUE,25,25,25,4.65,3,"american",11,4,7,48
 "93","Rauw Alejandro","197b70c7-8910-4030-ad03-632d82aa40e3","Person","Male","Puerto Rico","San Juan",NA,"N/A",TRUE,25,25,10,5,1,"hip hop",5,0,3,33
-"94","Feid","eaee97f6-f2e4-414a-966c-f31a1fb4696a","Person","Male","Colombia","Medellín",NA,"N/A",TRUE,25,25,2,4.5,2,"latin",4,0,0,34
+"94","Feid","eaee97f6-f2e4-414a-966c-f31a1fb4696a","Person","Male","Colombia","Medellín",NA,"N/A",TRUE,25,25,3,4.65,3,"latin",4,0,0,34
 "95","Anitta","d606b860-cc03-4959-a3fd-3a24bccf2560","Person","Female","Brazil","Rio de Janeiro",NA,"N/A",TRUE,25,25,25,NA,0,"funk",6,3,3,33
-"96","Elton John","b83bc61f-8451-4a5d-8b8e-7e9ed295e822","Person","Male","United Kingdom","Pinner",NA,"N/A",TRUE,25,25,25,4.2,15,"adult contemporary",12,6,21,79
+"96","Elton John","b83bc61f-8451-4a5d-8b8e-7e9ed295e822","Person","Male","United Kingdom","Pinner",NA,"N/A",TRUE,25,25,25,4.2,15,"adult contemporary",22,6,21,79
