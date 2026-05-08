@@ -1,0 +1,162 @@
+---
+title: "MP2_APIscraping"
+author: "Celine_Al Miari_and_Yareli_Rosales"
+format: pdf
+editor: visual
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, message=FALSE}
+
+#| column: page
+#| echo: true
+
+#load packages
+library(tidyverse)
+library(httr)
+library(stringr)
+library(rvest)
+library(rlang)
+library(styler)
+
+
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  tidy = "styler"
+)
+```
+
+```{r}
+
+#| column: page
+#| echo: true
+
+
+# Giving to the URl for public MusicBinz API
+base_url <- "https://musicbrainz.org/ws/2/artist/"   
+
+# The names of artists that we want to study
+artists <- c("The Beatles", "Taylor Swift", "Radiohead", "Daft Punk", "Miles Davis", "Shawn Mendes", "KAROL G", "Fairuz", "Nancy Ajram", "Elissa Khoury", "Wael Kfoury", "Najwa Karam", "Ragheb Alama", "Myriam Fares", "Assi El Hallani", "Haifa Wehbe", "Melhem Zein", "Vicente Fernández", "Juan Gabriel", "Luis Miguel", "Thalia", "Alejandro Fernández", "Selena", "Pedro Infante", "José José", "Gloria Trevi", "Marco Antonio Solís", "Ana Gabriel", "Christian Nodal", "Peso Pluma", "Natanael Cano", "Julieta Venegas", "Paulina Rubio", "Carlos Rivera", "Joan Sebastian", "Banda MS", "Los Tigres del Norte", "Drake", "Beyoncé", "Kendrick Lamar", "Rihanna", "Eminem", "Ariana Grande", "Billie Eilish", "The Weeknd", "Bruno Mars", "Post Malone", "Travis Scott", "Lady Gaga", "Justin Bieber", "Bad Bunny", "Olivia Rodrigo", "Doja Cat", "SZA", "Chris Brown", "Kanye West", "Future", "Nicki Minaj", "Cardi B", "Lana Del Rey", "Ed Sheeran", "Harry Styles", "Morgan Wallen", "Luke Combs", "Shawn Mendes", "Selena Gomez", "Michael Jackson", "Madonna", "Prince", "Whitney Houston", "Adele", "Shakira", "J Balvin", "Ozuna", "Daddy Yankee", "Rosalía", "BTS", "BLACKPINK", "Coldplay", "U2", "Metallica", "The Rolling Stones", "Elvis Presley", "Frank Sinatra", "Bob Marley", "Dua Lipa", "Imagine Dragons", "The Chainsmokers", "Maroon 5", "Sam Smith", "Alicia Keys", "John Legend", "Rauw Alejandro", "Feid", "Anitta", "Elton John")
+             
+ 
+##Function that will find artists in database
+
+artist_finder <- function(artists) {  
+  
+
+# 1. Set up the Master Tibble
+music_master <- tibble(
+  Artist         = character(),
+  MBID           = character(),
+  Type           = character(),
+  Gender         = character(),
+  Country        = character(),
+  Hometown       = character(),
+  Start_Date     = character(),
+  End_Date       = character(),
+  Is_Active      = logical(),
+  
+  # Quantitative Variables
+  Album_Count    = double(),
+  Recording_Count= double(),
+  Work_Count     = double(),
+  User_Rating    = double(),
+  Rating_Votes   = double(),
+  
+  # Categorical Variables
+  Top_Genre      = character(),
+  Tag_Count      = double(),
+  Label_Count    = double(),
+  Collab_Count   = double()
+)
+# 2. The Master For  Loop
+for(i in 1:length(artists)) {  #looping around the artists
+  
+  # Step A: Find the ID
+  search_url <- str_c(base_url, "?query=", 
+                      str_replace_all(artists[i], " ", "+"), "&fmt=json")
+  Sys.sleep(1)      # politely scraping 
+  # user_agent for Public API
+  search_res <- GET(search_url, user_agent("StOlaf_DataScience_Final"))  
+  #get the content of artists parsed
+  search_details <- content(search_res, "parsed")   
+  #gets the first artists ID
+  artist_id <- search_details$artists[[1]]$id       
+  
+  # Step B: The Lookup 
+  lookup_url <- str_c(base_url, artist_id, 
+     "?inc=release-groups+recordings+works+ratings+tags+artist-rels+label-rels+area-rels+place-rels+url-rels&fmt=json")    #looking for the URL for the artists ID
+  #Sys.sleep(1.1)
+  details <- content(GET(lookup_url, 
+                         user_agent("StOlaf_DataScience_Final")),
+                          "parsed")  #details artists
+  
+  # Step C: Filling the Master Row
+  music_master[i, "Artist"]     <- artists[i]
+  music_master[i, "MBID"]       <- artist_id %||% "Unknown"
+  music_master[i, "Type"]       <- details$type %||% "Unknown"
+  music_master[i, "Gender"]     <- details$gender %||% "N/A"
+  music_master[i, "Country"]    <- details$area$name %||% "Unknown"
+  music_master[i, "Hometown"]   <- details$`begin-area`$name %||% "Unknown"
+  music_master[i, "Start_Date"] <- details$`life-span`$begin %||% "N/A"
+  music_master[i, "End_Date"]   <- details$`life-span`$end %||% "N/A"
+  music_master[i, "Is_Active"]  <- !as.logical(details$`life-span`$ended)
+  
+  # Quantitative Stats
+  #API limits to only 25 entities
+  music_master[i, "Album_Count"] <- length(details$`release-groups`)  
+  music_master[i, "Recording_Count"] <- length(details$recordings)  
+  music_master[i, "Work_Count"] <- length(details$works)
+  music_master[i, "User_Rating"] <- as.numeric(details$rating$value %||% NA)
+  music_master[i, "Rating_Votes"] <- as.numeric(details$rating$`votes-count` %||% 0)
+  
+  # Categorical Counts
+  music_master[i, "Tag_Count"]   <- length(details$tags)
+  music_master[i, "Top_Genre"]   <- 
+    if(length(details$tags) > 0) details$tags[[1]]$name else NA
+  
+  # Relationship Counts (Calculating Label and Artist-Collab connections)
+  if(!is.null(details$relations)) {
+    music_master[i, "Label_Count"]  <- 
+      sum(sapply(details$relations, function(x) x$`target-type` == "label"))
+    music_master[i, "Collab_Count"] <- 
+      sum(sapply(details$relations, function(x) x$`target-type` == "artist"))
+  } else {
+    music_master[i, "Label_Count"]  <- 0
+    music_master[i, "Collab_Count"] <- 0
+  }
+}
+
+# After runnning the for loop we clean the date column 
+# to separate between birthdates(person) and start dates(groups)
+year <- as.numeric(substr(music_master$Start_Date, 1, 4))
+current_year <- 2026
+
+music_master$Age <- ifelse(
+  grepl("^\\d{4}-", music_master$Start_Date),
+  current_year - year,NA)
+
+music_master$Start_Date <- ifelse(
+  # grepl: a function used to search for pattern matches within a char vector
+  grepl("^\\d{4}$", music_master$Start_Date),
+  music_master$Start_Date,NA)
+
+
+return(music_master)
+
+}
+
+##Call the function on vector given
+music_master <- artist_finder(artists)
+
+##Write tibble created into a csv file
+write.csv(music_master, "global_music.csv")
+
+# Show the first 10 entries of the dataset created
+head(music_master, 10)
+
+```
+
