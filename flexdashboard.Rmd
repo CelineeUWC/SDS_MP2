@@ -284,7 +284,66 @@ renderLeaflet({
 Artist Analysis
 ==========================
 
+Column {data-width=200}
+-------------------------------------
 
+### Controls
+
+```{r,echo=FALSE}
+selectInput(
+  "n_breaks",
+  label = "Country:",
+  choices = c("Lebanon","Mexico","US","UK","Canada"),
+  selected = "Lebanon"
+)
+```
+
+Column
+-------------------------------------
+
+### Map
+
+```{r,echo=FALSE}
+renderLeaflet({
+
+  if(input$n_breaks == "Lebanon"){
+
+    leaflet() |>
+      addTiles() |>
+      setView(35.969155, 33.8413248, zoom = 13) |>
+      addPopups(35.969155, 33.8413248, "Welcome to Lebanon")
+
+  } else if(input$n_breaks == "Mexico"){
+
+    leaflet() |>
+      addTiles() |>
+      setView(-103.5980383, 24.2114149, zoom = 13) |>
+      addPopups(-103.5980383, 24.2114149, "Welcome to Mexico")
+  }
+
+})
+```
+
+### Plot
+```{r,echo=FALSE}
+artist_leb <- artists |> filter(Country == "Lebanon")|>
+  ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
+      geom_col()
+artist_leb 
+artist_mex <- artists |> filter(Country == "Mexico") |>
+  ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
+      geom_col()
+artist_mex 
+renderPlot({
+
+  if (input$n_breaks == "Lebanon") {
+artist_leb 
+  } else if (input$n_breaks == "Mexico") {
+artist_mex 
+  }
+
+})
+```
 
 
 Collabs
