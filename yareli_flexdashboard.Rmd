@@ -3,197 +3,405 @@ title: "Global Artists"
 runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
-    theme: 
+    theme:
       version: 5
+    navbar:
+      - { title: "GitHub", href: "https://github.com/CelineeUWC/SDS_MP2", align: right, icon: "fa-github" }
+    source_code: embed
 ---
 
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
 library(tidyverse)
 library(stringr)
-library(rvest)
-library(httr)
 library(ggplot2)
 library(readr)
 library(plotly)
 library(flexdashboard)
-library(ggthemes)
 library(shinyWidgets)
-library(reshape2)
 library(gt)
-
-
-
-
-# Packages required for maps 
-library(tidyverse)
-library(mdsr)      # package associated with our MDSR book
-library(poliscidata)
-library(htmltools)
-library(glue)
+library(shiny)
 library(maps)
 library(viridis)
-library(statebins)
 library(leaflet)
+library(htmltools)
+library(glue)
 ```
 
 
-```{r, echo = FALSE}
-artists <- read_csv("global_music.csv")
+```{r load-and-clean, echo=FALSE}
+# ── Load data ──────────────────────────────────────────────────────────────────
+artists <- read_csv("global_music.csv") |>
+  select(-`...1`)   # drop the auto-index column R adds on read
+
+# standardise country names
+# We convert everything to lowercase FIRST, then recode, so there are no
+# capitalisation mismatches when we later join to map_data("world").
+artists <- artists |>
+  mutate(Country = tolower(trimws(Country))) |>
+  mutate(Country = recode(Country,
+    "united states"       = "usa",
+    "united kingdom"      = "uk",
+    "england"             = "uk",
+    "scotland"            = "uk",
+    "wales"               = "uk",
+    "northern ireland"    = "uk",
+    "los angeles"         = "usa",
+    "new york"            = "usa",
+    "south korea"         = "south korea",
+    "republic of ireland" = "ireland"
+  ))
+
+# country  lookup from the maps package
+# map_data("world") gives one row per polygon vertex, so we collapse each
+# country down to a single average lat/lon to use as a map marker position.
+country_coords <- map_data("world") |>
+  mutate(region = tolower(region)) |>
+  group_by(region) |>
+  summarize(
+    Longitude = mean(long, na.rm = TRUE),
+    Latitude  = mean(lat,  na.rm = TRUE),
+    .groups   = "drop"
+  )
+
+# join coordinates onto the artist rows 
+# artists whose country didn't match any map region will get NA coords and
+# simply won't appear as dots on the leaflet map
+artists_map <- artists |>
+  left_join(country_coords, by = c("Country" = "region"))
+
+# pre-build filter choice vectors (used by every sidebar)
+all_genres    <- c("All", sort(unique(na.omit(artists$Top_Genre))))
+all_types     <- c("All", sort(unique(na.omit(artists$Type))))
+all_genders   <- c("All", sort(unique(na.omit(artists$Gender))))
+all_countries <- c("All", sort(unique(na.omit(artists$Country))))
+age_range     <- range(artists$Age, na.rm = TRUE)
+```
+
+Home
+================================================================================
+
+Column {data-width=480}
+--------------------------------------------------------------------------------
+
+### About This Project
+
+Welcome to the **Global Artists Dashboard** a data-driven exploration of
+some of our favorite music artists from around the world.
+
+---
+
+#### Data Source
+
+All artist data was collected from the
+[**MusicBrainz API**](https://musicbrainz.org/doc/MusicBrainz_API), an open
+music encyclopedia that records metadata about artists, releases, and
+recordings worldwide.
+
+---
+
+#### How We Built the Dataset
+
+| Step | Action |
+|------|--------|
+| 1 | Queried the MusicBrainz REST API across multiple genres and regions |
+| 2 | Extracted artist metadata (ratings, tags, type, area) |
+| 3 | Derived **Collab_Count** by counting credited artist relationships |
+| 4 | Derived **Age** from career-begin dates |
+| 5 | Merged with `map_data("world")` centroids for geographic coordinates |
+| 6 | Cleaned and standardised country names for joining |
+
+---
+
+#### Variables in the Dataset
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `Artist` | Categorical | Artist or group name |
+| `Type` | Categorical | *Person* (solo) or *Group* |
+| `Gender` | Categorical | Gender of solo artist |
+| `Top_Genre` | Categorical | Primary musical genre |
+| `Country` | Categorical | Country of origin |
+| `Hometown` | Categorical | City/region of origin |
+| `Is_Active` | Binary Categorical | Whether artist is still active |
+| `User_Rating` | Numerical | Avg. user rating (0–5) |
+| `Rating_Votes` | Numerical | Number of user votes |
+| `Collab_Count` | Numerical | Count of credited collaborations |
+| `Age` | Numerical | Years since career began |
+| `Album_Count` | Numerical | Number of albums |
+| `Recording_Count` | Numerical | Number of recordings |
+
+The full code and raw data live on our
+[**GitHub Repository →**](https://github.com/CelineeUWC/SDS_MP2)
+
+Column {data-width=520}
+--------------------------------------------------------------------------------
+
+### Dataset at a Glance
+
+```{r home-kpi}
+n_artists   <- nrow(artists)
+n_countries <- n_distinct(artists$Country,   na.rm = TRUE)
+n_genres    <- n_distinct(artists$Top_Genre, na.rm = TRUE)
+avg_rating  <- round(mean(artists$User_Rating, na.rm = TRUE), 2)
+
+tibble(
+  Metric = c("Total Artists", "Countries Represented",
+             "Genres Represented", "Avg. User Rating"),
+  Value  = c(
+    format(n_artists, big.mark = ","),
+    as.character(n_countries),
+    as.character(n_genres),
+    paste0(avg_rating, " / 5")
+  )
+) |>
+  gt() |>
+  tab_header(title = "Dataset Overview") |>
+  cols_align("center", columns = Value) 
+```
+
+### Sample of the Data
+
+```{r home-table}
+artists |>
+  select(Artist, Country, Top_Genre, Type, Gender,
+         Age, User_Rating, Rating_Votes, Collab_Count, Is_Active) |>
+  slice_head(n = 10) |> # we might not be able to see all of it here 
+  gt() |> #gt package taught by Sokmean in class :)
+  cols_label(
+    Top_Genre = "Genre",
+    User_Rating = "Rating",
+    Rating_Votes = "Votes",
+    Collab_Count = "Collabs",
+    Is_Active = "Active"
+  ) |>
+  fmt_number(columns = User_Rating, decimals = 2)
+  
 ```
 
 
 About
-==========================
-
-Column {data-width = 400}
--------------------------
-
-#### Background Information
+================================================================================
 
 
-Our data was acquired though the [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API) and the files for this can be
-found in our [GitHub](https://github.com/CelineeUWC/SDS_MP2).
+Column {data-width=420}
+--------------------------------------------------------------------------------
 
+### Research Questions
 
+This project investigates **what makes a music artist popular** by analysing
+artist characteristics, geography, age, and collaboration behaviour.
+
+---
+
+#### Popularity & Ratings
+1. What factors are most associated with higher user ratings?
+2. How do genre, type (solo vs group), and country relate to ratings?
+
+####  Age & Career
+3. At what age do most highly-rated **solo artists** begin their careers?
+4. How are age and genre related in this dataset?
+
+####  Geography
+5. Does an artist's location affect their popularity?
+
+####  Collaboration
+6. Are younger artists collaborating more than older artists?
+7. How does collaboration vary by artist type (group vs person)?
+
+Column {data-width=580}
+--------------------------------------------------------------------------------
+
+### Summary Statistics by Artist Type
+
+```{r about-summary}
+artists |>
+  filter(!is.na(Type)) |>
+  group_by(Type) |>
+  summarize(
+    Count       = n(),
+    Avg_Rating  = round(mean(User_Rating,  na.rm = TRUE), 2),
+    Median_Age  = median(Age,              na.rm = TRUE),
+    Avg_Collabs = round(mean(Collab_Count, na.rm = TRUE), 1),
+    Avg_Albums  = round(mean(Album_Count,  na.rm = TRUE), 1),
+    .groups     = "drop"
+  ) |>
+  gt() |>
+  cols_label(
+    Avg_Rating  = "Avg Rating",
+    Median_Age  = "Median Age",
+    Avg_Collabs = "Avg Collabs",
+    Avg_Albums  = "Avg Albums"
+  )
+```
 
 
 Maps
-==========================
+================================================================================
 
-Column {data-width = 400}
--------------------------
+Column {.sidebar data-width=260}
+--------------------------------------------------------------------------------
 
-*Lets take a look at some maps*
+**Map Filters**
 
+```{r map-sidebar}
+selectInput("map_genre", "Genre:",
+            choices = all_genres, selected = "All")
 
-```{r, echo = FALSE}
+selectInput("map_type", "Artist Type:",
+            choices = all_types, selected = "All")
 
-#here i got the average coordinate for each country 
-country_coords <- map_data("world") |>
-  
-  group_by(region) |>
-  
-  summarize(
-    Longitude = mean(long, na.rm = TRUE),
-    Latitude = mean(lat, na.rm = TRUE)
-  )
+selectInput("map_active", "Active Status:",
+            choices = c("All", "TRUE", "FALSE"), selected = "All")
 
-head(country_coords)
+sliderInput("map_rating", "Min. User Rating:",
+            min = 0, max = 5, value = 0, step = 0.25)
 
-
-#here i cleaned the country names 
-
+hr()
+p(em("Circle size = rating. Click any marker for full details."))
 ```
 
-```{r}
+Column {data-width=700}
+--------------------------------------------------------------------------------
 
-artists <- artists |>
-  mutate(
-    Country = recode(
-      Country,
-      "united states" = "usa",
-      "united kingdom" = "uk",
-      "england" = "uk",
-      "los angeles" = "usa",
-      
-    )
-  )
+### Interactive World Map of Artists
 
+```{r map-leaflet}
+# reactive filter
+# every time a sidebar input changes, R re-runs this reactive block and the
+# map below automatically redraws with only the matching rows.
+map_data_r <- reactive({
+  df <- artists_map |> filter(!is.na(Longitude), !is.na(Latitude))
+  if (input$map_genre  != "All") df <- df |> filter(Top_Genre == input$map_genre)
+  if (input$map_type   != "All") df <- df |> filter(Type      == input$map_type)
+  if (input$map_active != "All")
+    df <- df |> filter(as.character(Is_Active) == input$map_active)
+  df <- df |> filter(is.na(User_Rating) | User_Rating >= input$map_rating)
+  df
+})
 
+renderLeaflet({
+  df  <- map_data_r()
+  # colorNumeric maps a continuous variable (User_Rating 0–5) to a colour ramp.
+  pal <- colorNumeric("YlOrRd", domain = c(0, 5), na.color = "#aaaaaa")
+
+  leaflet(df) |>
+    addProviderTiles(providers$CartoDB.Positron) |>  # clean greyscale base map
+    setView(lng = 10, lat = 25, zoom = 2) |>
+    addCircleMarkers(
+      # jitter slightly so artists in the same country don't all stack exactly
+      lng         = ~jitter(Longitude, factor = 0.8),
+      lat         = ~jitter(Latitude,  factor = 0.8),
+      # larger circle = higher rating
+      radius      = ~ifelse(is.na(User_Rating), 5, 3 + User_Rating * 2),
+      fillColor   = ~pal(User_Rating),
+      fillOpacity = 0.85,
+      stroke      = TRUE,
+      weight      = 0.8,
+      color       = "white",
+      # html popup shown when user clicks a marker
+      popup = ~paste0(
+        "<b style='font-size:14px'>", Artist, "</b><br>",
+        "<hr style='margin:4px 0'>",
+        " <b>Country:</b> ",  str_to_title(Country), "<br>",
+        "️ <b>Hometown:</b> ", ifelse(is.na(Hometown),  "Unknown", Hometown),  "<br>",
+        " <b>Genre:</b> ",    ifelse(is.na(Top_Genre), "Unknown", Top_Genre), "<br>",
+        " <b>Type:</b> ",     ifelse(is.na(Type),      "Unknown", Type),      "<br>",
+        " <b>Rating:</b> ",   ifelse(is.na(User_Rating), "N/A",
+                                       paste0(round(User_Rating, 2), " / 5")),  "<br>",
+        " <b>Age:</b> ",      ifelse(is.na(Age), "N/A", Age),                 "<br>",
+        " <b>Collabs:</b> ",  ifelse(is.na(Collab_Count), "N/A", Collab_Count)
+      ),
+      label = ~Artist   # tooltip shown on hover (no click needed)
+    ) |>
+    addLegend("bottomright",
+              pal     = pal,
+              values  = ~User_Rating,
+              title   = "User Rating",
+              opacity = 0.85)
+})
 ```
 
-```{r}
-# more name cleaning 
-artists$Country <- tolower(artists$Country)
-country_coords$region <- tolower(country_coords$region)
-```
-
-
-```{r}
-
-artists_map <- artists %>%
-  
-  left_join(
-    country_coords,
-    by = c("Country" = "region")
-  )
-```
-
-
-
-
-
-
-
-
-
-Column
----------------------------------
-currently my artits data does not have the longigute and latitude  i need to get it form some where else 
-
-
-
-```{r}
-ggplot(artists_map, aes(Longitude, Latitude))+
-  geom_polygon(color = "white") +
-  coord_fixed(1.3) +
-  scale_fill_viridis_c(na.value = "gray90") +
-  labs(
-    title = "Global Music Artists by Country",
-    fill = "Artists"
-  ) +
-  theme_minimal()
-```
-
-
-
-
-
-Column
--------------------------
-
-Here we will attempt to join map data with the global music artists data that 
-we acquired through the MusicBrainz API database.
 
 
 Artist Analysis
 ==========================
 
-```{r,echo=FALSE}
-inputPanel(
-  selectInput("n_breaks", label = "Country:",
-              choices = c("Lebanon","Mexico","US","UK","Canada"), selected = 20)
-)
-renderPlotly(
-  if(choices == Leabnon){
-leaflet()|>
-  addTiles()|>
-  setView(35.969155,33.8413248, zoom = 13)|>
-  addPopups(35.969155,33.8413248,'Welcome to Lebanon')
-  }if(choices == Mexico){
-  leaflet()|>
-  addTiles()|>
-  setView(-103.5980383,24.2114149, zoom = 13)|>
-  addPopups(-103.5980383,24.2114149,'Welcome to Mexico')
-}
-)
-```
-Column 
--------------------------
+Column {data-width=200}
+-------------------------------------
 
-```{r}
-leaflet()|>
-  addTiles()|>
-  setView(35.969155,33.8413248, zoom = 13)|>
-  addPopups(35.969155,33.8413248,'Welcome to Lebanon')
+### Controls
+
+```{r,echo=FALSE}
+selectInput(
+  "n_breaks",
+  label = "Country:",
+  choices = c("Lebanon","Mexico","USA","UK","Canada"),
+  selected = "Lebanon"
+)
 ```
+
+Column
+-------------------------------------
+
+### Map
+
+```{r,echo=FALSE}
+### Map
+renderLeaflet({
+  # Filter data based on input
+  country_data <- artists_map %>% 
+    filter(str_to_lower(Country) == str_to_lower(input$n_breaks))
+  
+  # Calculate center of the country
+  avg_lng <- mean(country_data$Longitude, na.rm = TRUE)
+  avg_lat <- mean(country_data$Latitude, na.rm = TRUE)
+
+  leaflet(country_data) %>%
+    addTiles() %>%
+    setView(lng = avg_lng, lat = avg_lat, zoom = 4) %>%
+    addMarkers(~Longitude, ~Latitude, popup = ~Artist)
+})
+
+### Plot
+renderPlot({
+  # Dynamic filtering based on selection
+  artists %>% 
+    filter(str_to_lower(Country) == str_to_lower(input$n_breaks)) %>%
+    ggplot(aes(x = reorder(Artist, -User_Rating), y = User_Rating, fill = Gender)) +
+      geom_col() +
+      coord_flip() + # Makes names easier to read
+      theme_minimal() +
+      labs(title = paste("Artist Ratings in", input$n_breaks),
+           x = "Artist", y = "User Rating")
+})
+```
+
+### Plot
 
 
 
 Collabs
 ==========================
+
+
+```{r}
+
+### Collaboration vs. Age
+renderPlotly({
+  p <- ggplot(artists, aes(x = Age, y = Collab_Count, color = Type)) +
+    geom_point(alpha = 0.6) +
+    geom_smooth(method = "lm", se = FALSE) +
+    theme_minimal() +
+    labs(title = "Collaboration Frequency by Career Age",
+         x = "Years in Industry (Age)", y = "Number of Collabs")
+  
+  ggplotly(p) # Makes it interactive for the user!
+})
+```
 
 
 Conclusion
