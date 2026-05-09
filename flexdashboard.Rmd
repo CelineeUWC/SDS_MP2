@@ -326,20 +326,17 @@ renderLeaflet({
 
 ### Plot
 ```{r,echo=FALSE}
-artist_leb <- artists |> filter(Country == "Lebanon")|>
-  ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col()
-artist_leb 
-artist_mex <- artists |> filter(Country == "Mexico") |>
-  ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col()
-artist_mex 
+ 
 renderPlot({
-
+  artist_leb <- artists |> filter(Country == "Lebanon")
+artist_mex <- artists |> filter(Country == "Mexico") 
   if (input$n_breaks == "Lebanon") {
-artist_leb 
+    ggplot() +
+       geom_col( artist_leb, aes(x = Artist, y = User_Rating, fill = Gender)) 
+
   } else if (input$n_breaks == "Mexico") {
-artist_mex 
+ ggplot() +
+       geom_col( artist_mex, aes(x = Artist, y = User_Rating, fill = Gender)) 
   }
 
 })
