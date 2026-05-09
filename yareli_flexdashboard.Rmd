@@ -161,6 +161,34 @@ we acquired through the MusicBrainz API database.
 Artist Analysis
 ==========================
 
+```{r,echo=FALSE}
+inputPanel(
+  selectInput("n_breaks", label = "Country:",
+              choices = c("Lebanon","Mexico","US","UK","Canada"), selected = 20)
+)
+renderPlotly(
+  if(choices == Leabnon){
+leaflet()|>
+  addTiles()|>
+  setView(35.969155,33.8413248, zoom = 13)|>
+  addPopups(35.969155,33.8413248,'Welcome to Lebanon')
+  }if(choices == Mexico){
+  leaflet()|>
+  addTiles()|>
+  setView(-103.5980383,24.2114149, zoom = 13)|>
+  addPopups(-103.5980383,24.2114149,'Welcome to Mexico')
+}
+)
+```
+Column 
+-------------------------
+
+```{r}
+leaflet()|>
+  addTiles()|>
+  setView(35.969155,33.8413248, zoom = 13)|>
+  addPopups(35.969155,33.8413248,'Welcome to Lebanon')
+```
 
 
 
