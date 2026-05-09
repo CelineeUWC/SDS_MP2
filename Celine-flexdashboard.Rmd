@@ -7,15 +7,6 @@ output:
       version: 5
 ---
 
----
-title: "Global Artists"
-runtime: shiny
-output: 
-  flexdashboard::flex_dashboard:
-    theme: 
-      version: 5
----
-
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -144,11 +135,13 @@ Column {data-width=200}
 ### Controls
 
 ```{r,echo=FALSE}
+inputPanel(
 selectInput(
   "n_breaks",
   label = "Country:",
   choices = c("Lebanon","Mexico","US","UK","Canada"),
   selected = "Lebanon"
+)
 )
 ```
 
@@ -158,46 +151,74 @@ Column
 ### Map
 
 ```{r,echo=FALSE}
-renderLeaflet({
 
-  if(input$n_breaks == "Lebanon"){
+output$map <- renderLeaflet({
+
+  if (input$n_breaks == "Lebanon") {
 
     leaflet() |>
       addTiles() |>
-      setView(35.969155, 33.8413248, zoom = 13) |>
+      setView(35.969155, 33.8413248, zoom = 6) |>
       addPopups(35.969155, 33.8413248, "Welcome to Lebanon")
 
-  } else if(input$n_breaks == "Mexico"){
+  } else if (input$n_breaks == "Mexico") {
 
     leaflet() |>
       addTiles() |>
-      setView(-103.5980383, 24.2114149, zoom = 13) |>
-      addPopups(-103.5980383, 24.2114149, "Welcome to Mexico")
-  }
+      setView(-102.5528, 23.6345, zoom = 5) |>
+      addPopups(-102.5528, 23.6345, "Welcome to Mexico")
+
+  }else if (input$n_breaks == "US") {
+
+    leaflet() |>
+      addTiles() |>
+      setView(-121.6253101,48.7433334, zoom = 5) |>
+      addPopups(-121.6253101,48.7433334, "Welcome to United States")
+  }else if (input$n_breaks == "UK") {
+
+    leaflet() |>
+      addTiles() |>
+      setView(-4.0987501,55.5581317, zoom = 5) |>
+      addPopups(-4.0987501,55.5581317, "Welcome to United Kindgom")
+  } else if (input$n_breaks == "Canada") {
+
+    leaflet() |>
+      addTiles() |>
+      setView(-89.756176, 65.2931221, zoom = 5) |>
+      addPopups(-89.756176,65.2931221, "Welcome to Canada")
+  } 
 
 })
+```
+
+```{r}
+leafletOutput("map", height = 400)
 ```
 
 ### Plot
 ```{r,echo=FALSE}
-artist_leb <- artists |> filter(Country == "Lebanon")|>
-  ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col()
-artist_leb 
-artist_mex <- artists |> filter(Country == "Mexico") |>
-  ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col()
-artist_mex 
-renderPlot({
+output$plot <- renderPlot({
 
-  if (input$n_breaks == "Lebanon") {
-artist_leb 
-  } else if (input$n_breaks == "Mexico") {
-artist_mex 
-  }
+  req(input$n_breaks)
+
+  data <- artists %>%
+    filter(Country == input$n_breaks)
+
+  req(nrow(data) > 0)
+
+  ggplot(data, aes(x = Artist, y = User_Rating, fill = Gender)) +
+    geom_col() +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 })
 ```
+
+```{r}
+plotOutput("plot", height = 400)
+```
+
+
 # Collabs
 
 # Conclusion
