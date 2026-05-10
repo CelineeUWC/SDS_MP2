@@ -10,8 +10,6 @@ output:
     source_code: embed
 ---
 
-
-
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
@@ -74,16 +72,15 @@ country_coords <- map_data("world") |>
 artists_map <- artists |>
   left_join(country_coords, by = c("Country" = "region"))
 
-# ran this codeonce to get the hometown coordinates but ignored after because 
-# no longer needed because it takes to long to run
-# mutate to add hometown coordinates k
-artists_map <- artists_map |>
-  geocode(
-    address  = Hometown,          # column with city/place names
-    method   = "osm",             # free, no key required
-    long = Hometown_long,
-    lat = Hometown_lat
-  )
+# in load-and-clean chunk, run once, then always read from cache
+if (!file.exists("artists_geocoded.csv")) {
+  artists_map <- artists_map |>
+    geocode(address = Hometown, method = "osm",
+            long = Hometown_long, lat = Hometown_lat)
+  write_csv(artists_map, "artists_geocoded.csv")
+} else {
+  artists_map <- read_csv("artists_geocoded.csv")
+}
 
 # pre-build filter choice vectors (used by every sidebar)
 all_genres    <- c("All", sort(unique(na.omit(artists$Top_Genre))))
@@ -283,7 +280,7 @@ Column {data-width=700}
 # map below automatically redraws with only the matching rows.
 map_data_r <- reactive({
   df <- artists_map |> 
-    filter(!is.na(long), !is.na(lat))
+    filter(!is.na(Hometown_long), !is.na(Hometown_lat))
   if (input$map_genre  != "All") df <- df |> filter(Top_Genre == input$map_genre)
   if (input$map_type   != "All") df <- df |> filter(Type      == input$map_type)
   if (input$map_active != "All")
@@ -293,7 +290,7 @@ map_data_r <- reactive({
 })
 
 renderLeaflet({
-  df  <- map_data_r
+  df  <- map_data_r()
   # colorNumeric maps a continuous variable (User_Rating 0–5) to a colour ramp.
   pal <- colorNumeric("YlOrRd", domain = c(0, 5), na.color = "#aaaaaa")
 
@@ -302,8 +299,8 @@ renderLeaflet({
     setView(lng = 10, lat = 25, zoom = 2) |>
     addCircleMarkers(
       # jitter slightly so artists in the same country don't all stack exactly
-      lng         = long, 
-      lat         = lat,
+      lng         = ~jitter(Hometown_long, factor = 10), 
+      lat         = ~jitter(Hometown_lat, factor = 10),
       # larger circle = higher rating
       radius      = ~ifelse(is.na(User_Rating), 5, 3 + User_Rating * 2),
       fillColor   = ~pal(User_Rating),
@@ -458,7 +455,7 @@ leafletOutput("map", height = 400)
 
 Column {data-width=200}
 --------------------------------------------------------------------------------
-### USer Rating Plot
+### User Rating Plot
 
 ```{r,echo=FALSE}
 renderPlotly({
@@ -558,7 +555,7 @@ renderPlotly({
 
   if (input$n_breaks == "lebanon") {
     artists |>
-      filter(Country == "Lebanon") |>
+      filter(Country == "lebanon") |>
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
@@ -590,7 +587,7 @@ renderPlotly({
       )
   } else if (input$n_breaks == "usa") {
     artists |> 
-      filter(Country == "united states") |>
+      filter(Country == "usa") |>
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
@@ -606,7 +603,7 @@ renderPlotly({
       )
   }  else if (input$n_breaks == "uk") {
     artists |> 
-      filter(Country == "united kingdom") |>
+      filter(Country == "uk") |>
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
