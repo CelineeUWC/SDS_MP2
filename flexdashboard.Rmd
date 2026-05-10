@@ -340,6 +340,30 @@ selectInput(
 )
 ```
 
+
+
+```{r,echo=FALSE}
+artist_leb <- artists_map |>
+  select(Artist,Country, Latitude, Longitude, Hometown)|>
+  filter(Country == "lebanon")
+
+artist_mex <- artists_map |>
+  select(Artist,Country, Latitude, Longitude, Hometown)|>
+  filter(Country == "mexico")
+
+artist_usa <- artists_map |>
+  select(Artist,Country, Latitude, Longitude, Hometown)|>
+  filter(Country == "usa") 
+
+artist_uk <- artists_map |>
+  select(Artist,Country, Latitude, Longitude, Hometown)|>
+  filter(Country == "uk")
+artist_can <- artists_map |>
+  select(Artist,Country, Latitude, Longitude, Hometown)|>
+  filter(Country == "canada")
+
+```
+
 Column {data-width=200}
 --------------------------------------------------------------------------------
 
@@ -353,36 +377,63 @@ output$map <- renderLeaflet({
 
     leaflet() |>
       addTiles() |>
-      setView(35.969155, 33.8413248, zoom = 6) |>
-      addPopups(35.969155, 33.8413248, "Welcome to Lebanon") |>
-      addCircleMarkers(data = artists_map,
-                       lat = ~latitude)
+      setView(lng = mean(artist_leb$Longitude), lat = mean(artist_leb$Latitude), zoom = 6) |>
+      addPopups(35.969155, 33.8413248, "Welcome to Lebanon, Lebanese music is a vibrant mix of traditional Levantine folk and modern, high-energy pop, often featuring heavy rhythmic beats from the darbuka (goblet drum) and riq (tambourine). It is a massive regional hub for both Arabic pop and genres like deep house, with Beirut renowned for its thriving nightlife and rooftop club scene") |>
+      addCircleMarkers(data = artist_leb,
+                      lng = ~Longitude,
+                      lat = ~Latitude,
+                       color = "green",
+                      popup = paste0("Name: ", artist_leb$Artist))
 
   } else if (input$n_breaks == "mexico") {
 
     leaflet() |>
       addTiles() |>
       setView(-102.5528, 23.6345, zoom = 5) |>
-      addPopups(-102.5528, 23.6345, "Welcome to Mexico")
+      addPopups(-102.5528, 23.6345, "Welcome to Mexico,Mexican music is a vibrant, diverse, and historical blend of indigenous, Spanish, and African influences, heavily featuring strings, brass, and storytelling. It ranges from 500-year-old folk styles to modern, chart-topping rancheras, often highlighting themes of love, loss, and national pride") |>
+      addCircleMarkers(data = artist_mex,
+                      lng = ~Longitude,
+                      lat = ~Latitude,
+                       color = "pink",
+                      popup = paste0("Name: ", artist_mex$Artist))
+
 
   }else if (input$n_breaks == "usa") {
 
     leaflet() |>
       addTiles() |>
       setView(-121.6253101,48.7433334, zoom = 5) |>
-      addPopups(-121.6253101,48.7433334, "Welcome to United States")
+      addPopups(-121.6253101,48.7433334, "Welcome to United States, American music history is full of surprising trivia, such as the fact that iconic bands like Led Zeppelin and R.E.M. never achieved a #1 single in the US, while Rihanna has ten. The best-selling instrument in the US is the harmonica, and the cast of the show Glee has charted more songs than The Beatles")|>
+      addCircleMarkers(data = artist_usa,
+                      lng = ~Longitude,
+                      lat = ~Latitude,
+                       color = "blue",
+                      popup = paste0("Name: ", artist_usa$Artist))
+
   }else if (input$n_breaks == "uk") {
 
     leaflet() |>
       addTiles() |>
       setView(-4.0987501,55.5581317, zoom = 5) |>
-      addPopups(-4.0987501,55.5581317, "Welcome to United Kindgom")
+      addPopups(-4.0987501,55.5581317, "Welcome to United Kindgom, The UK music scene has a rich, compact history that has shaped global pop culture, featuring pioneering punk scenes, extensive folk traditions, and enduring chart rivalries. Elton John’s Candle in the Wind '97 is the best-selling single in UK history, while Lewis Capaldi holds the top-streamed song record") |>
+      addCircleMarkers(data = artist_uk,
+                      lng = ~Longitude,
+                      lat = ~Latitude,
+                       color = "orange",
+                      popup = paste0("Name: ", artist_uk$Artist))
+
   } else if (input$n_breaks == "canada") {
 
     leaflet() |>
       addTiles() |>
       setView(-89.756176, 65.2931221, zoom = 5) |>
-      addPopups(-89.756176,65.2931221, "Welcome to Canada")
+      addPopups(-89.756176,65.2931221, "Welcome to Canada,Canada is a massive exporter of musical talent, often ranking as the world's third-largest behind the US and UK. Notable quirks include Bryan Adams photographing the Queen, 1970s punk band D.O.A. coining the term hardcore and Toronto pianist Ruth Lowe writing Frank Sinatra's breakout hit I'll Never Smile Again") |>
+      addCircleMarkers(data = artist_can,
+                      lng = ~Longitude,
+                      lat = ~Latitude,
+                       color = "white",
+                      popup = paste0("Name: ", artist_can$Artist))
+
   } 
 
 })
@@ -434,7 +485,7 @@ renderPlotly({
 
   } else if (input$n_breaks == "usa") {
     artists |> 
-      filter(Country == "usa") |>
+      filter(Country == "united states") |>
       plot_ly(
         x = ~Artist,
         y = ~User_Rating,
@@ -450,7 +501,7 @@ renderPlotly({
       )
   }  else if (input$n_breaks == "uk") {
     artists |> 
-      filter(Country == "uk") |>
+      filter(Country == "united kingdom") |>
       plot_ly(
         x = ~Artist,
         y = ~User_Rating,
@@ -526,7 +577,7 @@ renderPlotly({
       )
   } else if (input$n_breaks == "usa") {
     artists |> 
-      filter(Country == "usa") |>
+      filter(Country == "united states") |>
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
@@ -542,7 +593,7 @@ renderPlotly({
       )
   }  else if (input$n_breaks == "uk") {
     artists |> 
-      filter(Country == "uk") |>
+      filter(Country == "united kingdom") |>
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
@@ -577,6 +628,8 @@ renderPlotly({
 })
 
 ```
+
+
 
 
 Collabs
