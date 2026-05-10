@@ -390,7 +390,7 @@ renderPlotly({
 
   } else if (input$n_breaks == "usa") {
     artists |> 
-      filter(Country == "united states") |>
+      filter(Country == "usa") |>
       plot_ly(
         x = ~Artist,
         y = ~User_Rating,
@@ -406,7 +406,7 @@ renderPlotly({
       )
   }  else if (input$n_breaks == "uk") {
     artists |> 
-      filter(Country == "united kingdom") |>
+      filter(Country == "uk") |>
       plot_ly(
         x = ~Artist,
         y = ~User_Rating,
@@ -482,7 +482,7 @@ renderPlotly({
       )
   } else if (input$n_breaks == "usa") {
     artists |> 
-      filter(Country == "united states") |>
+      filter(Country == "usa") |>
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
@@ -498,7 +498,7 @@ renderPlotly({
       )
   }  else if (input$n_breaks == "uk") {
     artists |> 
-      filter(Country == "united kingdom") |>
+      filter(Country == "uk") |>
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
