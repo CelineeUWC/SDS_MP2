@@ -354,7 +354,9 @@ output$map <- renderLeaflet({
     leaflet() |>
       addTiles() |>
       setView(35.969155, 33.8413248, zoom = 6) |>
-      addPopups(35.969155, 33.8413248, "Welcome to Lebanon")
+      addPopups(35.969155, 33.8413248, "Welcome to Lebanon") |>
+      addCircleMarkers(data = artists_map,
+                       lat = ~latitude)
 
   } else if (input$n_breaks == "mexico") {
 
