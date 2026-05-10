@@ -35,10 +35,12 @@ library(maps)
 library(viridis)
 library(statebins)
 library(leaflet)
+library(dplyr)
 ```
 
 ```{r, echo = FALSE}
 artists <- read_csv("global_music.csv")
+
 ```
 
 # About
@@ -76,7 +78,7 @@ head(country_coords)
 
 ```{r}
 
-artists <- artists |>
+artists1 <- artists |>
   mutate(
     Country = recode(
       Country,
@@ -88,7 +90,7 @@ artists <- artists |>
     )
   )
 
-
+artists1
 ```
 
 ```{r}
@@ -139,8 +141,7 @@ inputPanel(
 selectInput(
   "n_breaks",
   label = "Country:",
-  choices = c("Lebanon","Mexico","US","UK","Canada"),
-  selected = "Lebanon"
+  choices = c("lebanon","mexico","usa","uk","canada")
 )
 )
 ```
@@ -154,33 +155,33 @@ Column
 
 output$map <- renderLeaflet({
 
-  if (input$n_breaks == "Lebanon") {
+  if (input$n_breaks == "lebanon") {
 
     leaflet() |>
       addTiles() |>
       setView(35.969155, 33.8413248, zoom = 6) |>
       addPopups(35.969155, 33.8413248, "Welcome to Lebanon")
 
-  } else if (input$n_breaks == "Mexico") {
+  } else if (input$n_breaks == "mexico") {
 
     leaflet() |>
       addTiles() |>
       setView(-102.5528, 23.6345, zoom = 5) |>
       addPopups(-102.5528, 23.6345, "Welcome to Mexico")
 
-  }else if (input$n_breaks == "US") {
+  }else if (input$n_breaks == "usa") {
 
     leaflet() |>
       addTiles() |>
       setView(-121.6253101,48.7433334, zoom = 5) |>
       addPopups(-121.6253101,48.7433334, "Welcome to United States")
-  }else if (input$n_breaks == "UK") {
+  }else if (input$n_breaks == "uk") {
 
     leaflet() |>
       addTiles() |>
       setView(-4.0987501,55.5581317, zoom = 5) |>
       addPopups(-4.0987501,55.5581317, "Welcome to United Kindgom")
-  } else if (input$n_breaks == "Canada") {
+  } else if (input$n_breaks == "canada") {
 
     leaflet() |>
       addTiles() |>
@@ -191,32 +192,98 @@ output$map <- renderLeaflet({
 })
 ```
 
-```{r}
+```{r,echo=FALSE}
 leafletOutput("map", height = 400)
 ```
 
+Column
+-------------------------------------
+
 ### Plot
+
 ```{r,echo=FALSE}
-output$plot <- renderPlot({
+renderPlot({
 
-  req(input$n_breaks)
+  if (input$n_breaks == "lebanon") {
+    artists |> 
+      filter(Country == "lebanon") |>
+      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
+      geom_col(color = "black") +
+      theme_minimal()
+  } else if (input$n_breaks == "mexico") {
+    artists |> 
+      filter(Country == "mexico") |>
+      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
+      geom_col(color = "black") +
+      theme_minimal()
 
-  data <- artists %>%
-    filter(Country == input$n_breaks)
-
-  req(nrow(data) > 0)
-
-  ggplot(data, aes(x = Artist, y = User_Rating, fill = Gender)) +
-    geom_col() +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  } else if (input$n_breaks == "usa") {
+    artists |> 
+      filter(Country == "united states") |>
+      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
+      geom_col(color = "black") +
+      theme_minimal()
+  }  else if (input$n_breaks == "uk") {
+    artists |> 
+      filter(Country == "united kingdom") |>
+      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
+      geom_col(color = "black") +
+      theme_minimal()
+    
+  } else if (input$n_breaks == "canada") {
+    artists |> 
+      filter(Country == "canada") |>
+      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
+      geom_col(color = "black") +
+      theme_minimal()
+  }
 
 })
+
 ```
 
-```{r}
-plotOutput("plot", height = 400)
+Column
+-------------------------------------
+```{r, echo=FALSE}
+renderPlot({
+
+  if (input$n_breaks == "lebanon") {
+    artists |> 
+      filter(Country == "lebanon") |>
+      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
+      geom_point() +
+      theme_minimal()
+  } else if (input$n_breaks == "mexico") {
+   artists |> 
+      filter(Country == "mexico") |>
+      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
+      geom_point() +
+      theme_minimal()
+  } else if (input$n_breaks == "usa") {
+    artists |> 
+      filter(Country == "united states") |>
+      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
+      geom_point() +
+      theme_minimal()
+  }  else if (input$n_breaks == "uk") {
+    artists |> 
+      filter(Country == "united kingdom") |>
+      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
+      geom_point() +
+      theme_minimal()
+
+  } else if (input$n_breaks == "canada") {
+   artists |> 
+      filter(Country == "canada") |>
+      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
+      geom_point() +
+      theme_minimal()
+}
+
+})
+
 ```
+
 
 
 # Collabs
