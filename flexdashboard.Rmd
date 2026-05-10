@@ -29,6 +29,7 @@ library(viridis)
 library(leaflet)
 library(htmltools)
 library(glue)
+library(tidygeocoder) #new package we found for hometown coordinates 
 ```
 
 
@@ -73,11 +74,15 @@ country_coords <- map_data("world") |>
 artists_map <- artists |>
   left_join(country_coords, by = c("Country" = "region"))
 
+# ran this codeonce to get the hometown coordinates but ignored after because 
+# no longer needed because it takes to long to run
 # mutate to add hometown coordinates k
-
 artists_map <- artists_map |>
-  mutate(
-    Hometown
+  geocode(
+    address  = Hometown,          # column with city/place names
+    method   = "osm",             # free, no key required
+    long     = Hometown_long,
+    lat      = Hometown_lat
   )
 
 # pre-build filter choice vectors (used by every sidebar)
@@ -277,7 +282,8 @@ Column {data-width=700}
 # every time a sidebar input changes, R re-runs this reactive block and the
 # map below automatically redraws with only the matching rows.
 map_data_r <- reactive({
-  df <- artists_map |> filter(!is.na(Longitude), !is.na(Latitude))
+  df <- artists_map |> 
+    filter(!is.na(Hometown_long), !is.na(Hometown_lat))
   if (input$map_genre  != "All") df <- df |> filter(Top_Genre == input$map_genre)
   if (input$map_type   != "All") df <- df |> filter(Type      == input$map_type)
   if (input$map_active != "All")
@@ -287,7 +293,7 @@ map_data_r <- reactive({
 })
 
 renderLeaflet({
-  df  <- map_data_r()
+  df  <- map_data_r
   # colorNumeric maps a continuous variable (User_Rating 0–5) to a colour ramp.
   pal <- colorNumeric("YlOrRd", domain = c(0, 5), na.color = "#aaaaaa")
 
@@ -296,8 +302,8 @@ renderLeaflet({
     setView(lng = 10, lat = 25, zoom = 2) |>
     addCircleMarkers(
       # jitter slightly so artists in the same country don't all stack exactly
-      lng         = ~jitter(Longitude, factor = 0.8),
-      lat         = ~jitter(Latitude,  factor = 0.8),
+      lng         = Hometown_long, 
+      lat         = Hometown_lat,
       # larger circle = higher rating
       radius      = ~ifelse(is.na(User_Rating), 5, 3 + User_Rating * 2),
       fillColor   = ~pal(User_Rating),
@@ -682,7 +688,7 @@ col_data <- reactive({
   df
 })
 
-# EXAMPLE: scatterplot with an optional linear trend line.
+# scatterplot with an optional linear trend line.
 # The trend line is built with lm() and added via add_lines().
 # We guard with nrow >= 5 so the model doesn't crash on tiny subsets.
 renderPlotly({
@@ -747,7 +753,7 @@ Column {data-width=420}
 ###  Collab Count by Artist Type
 
 ```{r collab-box}
-# EXAMPLE: boxplot comparing collab distributions for Person vs Group.
+# boxplot comparing collab distributions for Person vs Group.
 # "outliers" shows individual dots for extreme values.
 renderPlotly({
   col_data() |>
