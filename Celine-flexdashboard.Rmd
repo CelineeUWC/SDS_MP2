@@ -180,11 +180,11 @@ output$map <- renderLeaflet({
 
     leaflet() |>
       addTiles() |>
-      setView(lng = mean(artist_leb$Longitude), lat = mean(artist_leb$Latitude), zoom = 6) |>
+      setView(lng = mean(artist_leb$Hometown_long), lat = mean(artist_leb$Hometown_lat), zoom = 6) |>
       addPopups(35.969155, 33.8413248, "Welcome to Lebanon, Lebanese music is a vibrant mix of traditional Levantine folk and modern, high-energy pop, often featuring heavy rhythmic beats from the darbuka (goblet drum) and riq (tambourine). It is a massive regional hub for both Arabic pop and genres like deep house, with Beirut renowned for its thriving nightlife and rooftop club scene") |>
       addCircleMarkers(data = artist_leb,
-                      lng = ~Longitude,
-                      lat = ~Latitude,
+                      lng = ~Hometown_long,
+                      lat = ~Hometown_lat,
                        color = "green",
                       popup = paste0("Name: ", artist_leb$Artist))
 
