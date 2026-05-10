@@ -109,10 +109,9 @@ recordings worldwide.
 |------|--------|
 | 1 | Queried the MusicBrainz REST API across multiple genres and regions |
 | 2 | Extracted artist metadata (ratings, tags, type, area) |
-| 3 | Derived **Collab_Count** by counting credited artist relationships |
-| 4 | Derived **Age** from career-begin dates |
-| 5 | Merged with `map_data("world")` centroids for geographic coordinates |
-| 6 | Cleaned and standardised country names for joining |
+| 3 | Derived **Age** from career-begin dates |
+| 4 | Merged with `map_data("world")` for geographic coordinates |
+| 5 | Cleaned and standardized country names for joining |
 
 ---
 
@@ -162,11 +161,7 @@ tibble(
 ) |>
   gt() |>
   tab_header(title = "Dataset Overview") |>
-  cols_align("center", columns = Value) |>
-  tab_style(
-    style     = list(cell_fill(color = "#eef2ff"), cell_text(weight = "bold")),
-    locations = cells_column_labels()
-  )
+  cols_align("center", columns = Value) 
 ```
 
 ### Sample of the Data
@@ -192,13 +187,11 @@ About
 ================================================================================
 
 
-Column {data-width=420}
---------------------------------------------------------------------------------
 
 ### Research Questions
 
-This project investigates **what makes a music artist popular** by analysing
-artist characteristics, geography, age, and collaboration behaviour.
+This project investigates **what makes a music artist popular** by analyzing
+artist characteristics, geography, age, and collaboration behavior.
 
 ---
 
@@ -208,7 +201,7 @@ artist characteristics, geography, age, and collaboration behaviour.
 
 ####  Age & Career
 3. At what age do most highly-rated **solo artists** begin their careers?
-4. How are age and genre related in this dataset?
+4. How are age and genre related in this data set?
 
 ####  Geography
 5. Does an artist's location affect their popularity?
@@ -217,8 +210,6 @@ artist characteristics, geography, age, and collaboration behaviour.
 6. Are younger artists collaborating more than older artists?
 7. How does collaboration vary by artist type (group vs person)?
 
-Column {data-width=580}
---------------------------------------------------------------------------------
 
 ### Summary Statistics by Artist Type
 
