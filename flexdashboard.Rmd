@@ -137,6 +137,57 @@ recordings worldwide.
 The full code and raw data live on our
 [**GitHub Repository →**](https://github.com/CelineeUWC/SDS_MP2)
 
+
+Column {data-width=520}
+--------------------------------------------------------------------------------
+
+
+### Dataset at a Glance
+
+```{r home-kpi}
+n_artists   <- nrow(artists)
+n_countries <- n_distinct(artists$Country,   na.rm = TRUE)
+n_genres    <- n_distinct(artists$Top_Genre, na.rm = TRUE)
+avg_rating  <- round(mean(artists$User_Rating, na.rm = TRUE), 2)
+
+tibble(
+  Metric = c("Total Artists", "Countries Represented",
+             "Genres Represented", "Avg. User Rating"),
+  Value  = c(
+    format(n_artists, big.mark = ","),
+    as.character(n_countries),
+    as.character(n_genres),
+    paste0(avg_rating, " / 5")
+  )
+) |>
+  gt() |>
+  tab_header(title = "Dataset Overview") |>
+  cols_align("center", columns = Value) |>
+  tab_style(
+    style     = list(cell_fill(color = "#eef2ff"), cell_text(weight = "bold")),
+    locations = cells_column_labels()
+  )
+```
+
+### Sample of the Data
+
+```{r home-table}
+artists |>
+  select(Artist, Country, Top_Genre, Type, Gender,
+         Age, User_Rating, Rating_Votes, Collab_Count, Is_Active) |>
+  slice_head(n = 15) |>
+  gt() |>
+  cols_label(
+    Top_Genre    = "Genre",
+    User_Rating  = "Rating",
+    Rating_Votes = "Votes",
+    Collab_Count = "Collabs",
+    Is_Active    = "Active"
+  ) |>
+  fmt_number(columns = User_Rating, decimals = 2)
+```
+
+
 About
 ================================================================================
 
