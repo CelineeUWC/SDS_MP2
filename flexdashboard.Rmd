@@ -284,8 +284,8 @@ renderLeaflet({
 Country Analysis
 ==========================
 
-Column {data-width=200}
--------------------------------------
+Column {.sidebar data-width=260}
+--------------------------------------------------------------------------------
 ### Controls
 
 ```{r,echo=FALSE}
@@ -298,9 +298,8 @@ selectInput(
 )
 ```
 
-
 Column {data-width=200}
--------------------------------------
+--------------------------------------------------------------------------------
 
 ### Map
 
@@ -350,93 +349,191 @@ leafletOutput("map", height = 400)
 ```
 
 Column {data-width=200}
--------------------------------------
-
-### Plot
+--------------------------------------------------------------------------------
+### USer Rating Plot
 
 ```{r,echo=FALSE}
-renderPlot({
+renderPlotly({
 
   if (input$n_breaks == "lebanon") {
     artists |> 
       filter(Country == "lebanon") |>
-      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col(color = "black") +
-      theme_minimal()
+     plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
   } else if (input$n_breaks == "mexico") {
     artists |> 
       filter(Country == "mexico") |>
-      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col(color = "black") +
-      theme_minimal()
+      plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
 
   } else if (input$n_breaks == "usa") {
     artists |> 
       filter(Country == "united states") |>
-      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col(color = "black") +
-      theme_minimal()
+      plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
   }  else if (input$n_breaks == "uk") {
     artists |> 
       filter(Country == "united kingdom") |>
-      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col(color = "black") +
-      theme_minimal()
+      plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
     
   } else if (input$n_breaks == "canada") {
     artists |> 
       filter(Country == "canada") |>
-      ggplot(aes(x = Artist, y = User_Rating, fill = Gender)) +
-      geom_col(color = "black") +
-      theme_minimal()
+      plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
   }
 
 })
 
 ```
 
-Column
--------------------------------------
+### Collabration Plot
 
 ```{r, echo=FALSE}
-renderPlot({
+renderPlotly({
 
   if (input$n_breaks == "lebanon") {
-    artists |> 
-      filter(Country == "lebanon") |>
-      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
-      geom_point() +
-      theme_minimal()
+    artists |>
+      filter(Country == "Lebanon") |>
+      plot_ly(
+        x = ~Age,
+        y = ~Collab_Count,
+        type = "bar",
+        color = ~Artist,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Age"),
+        yaxis = list(title = "Collab Count"),
+        barmode = "group"
+      )
   } else if (input$n_breaks == "mexico") {
    artists |> 
       filter(Country == "mexico") |>
-      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
-      geom_point() +
-      theme_minimal()
+      plot_ly(
+        x = ~Age,
+        y = ~Collab_Count,
+        type = "bar",
+        color = ~Artist,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Age"),
+        yaxis = list(title = "Collab Count"),
+        barmode = "group"
+      )
   } else if (input$n_breaks == "usa") {
     artists |> 
       filter(Country == "united states") |>
-      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
-      geom_point() +
-      theme_minimal()
+      plot_ly(
+        x = ~Age,
+        y = ~Collab_Count,
+        type = "bar",
+        color = ~Artist,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Age"),
+        yaxis = list(title = "Collab Count"),
+        barmode = "group"
+      )
   }  else if (input$n_breaks == "uk") {
     artists |> 
       filter(Country == "united kingdom") |>
-      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
-      geom_point() +
-      theme_minimal()
-
+      plot_ly(
+        x = ~Age,
+        y = ~Collab_Count,
+        type = "bar",
+        color = ~Artist,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Age"),
+        yaxis = list(title = "Collab Count"),
+        barmode = "group"
+      )
   } else if (input$n_breaks == "canada") {
    artists |> 
       filter(Country == "canada") |>
-      ggplot(aes(x = Age, y = Collab_Count, color = Artist)) +
-      geom_point() +
-      theme_minimal()
+      plot_ly(
+        x = ~Age,
+        y = ~Collab_Count,
+        type = "bar",
+        color = ~Artist,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Age"),
+        yaxis = list(title = "Collab Count"),
+        barmode = "group"
+      )
 }
 
 })
 
 ```
+
 
 Collabs
 ==========================
