@@ -81,8 +81,8 @@ artists_map <- artists_map |>
   geocode(
     address  = Hometown,          # column with city/place names
     method   = "osm",             # free, no key required
-    long     = Hometown_long,
-    lat      = Hometown_lat
+    long = Hometown_long,
+    lat = Hometown_lat
   )
 
 # pre-build filter choice vectors (used by every sidebar)
@@ -283,7 +283,7 @@ Column {data-width=700}
 # map below automatically redraws with only the matching rows.
 map_data_r <- reactive({
   df <- artists_map |> 
-    filter(!is.na(Hometown_long), !is.na(Hometown_lat))
+    filter(!is.na(long), !is.na(lat))
   if (input$map_genre  != "All") df <- df |> filter(Top_Genre == input$map_genre)
   if (input$map_type   != "All") df <- df |> filter(Type      == input$map_type)
   if (input$map_active != "All")
@@ -302,8 +302,8 @@ renderLeaflet({
     setView(lng = 10, lat = 25, zoom = 2) |>
     addCircleMarkers(
       # jitter slightly so artists in the same country don't all stack exactly
-      lng         = Hometown_long, 
-      lat         = Hometown_lat,
+      lng         = long, 
+      lat         = lat,
       # larger circle = higher rating
       radius      = ~ifelse(is.na(User_Rating), 5, 3 + User_Rating * 2),
       fillColor   = ~pal(User_Rating),
