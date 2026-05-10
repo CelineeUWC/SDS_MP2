@@ -554,7 +554,7 @@ renderPlotly({
     plot_ly(y         = ~Collab_Count,
             color     = ~Type,
             type      = "box",
-            colors    = c("#4361ee", "#f72585"),
+            colors    = c("blue", "hotpink"),
             boxpoints = "outliers") |>
     layout(
       yaxis  = list(title = "Collaboration Count"),
@@ -568,6 +568,16 @@ renderPlotly({
 
 Conclusion
 ==========================
+
+
+### References
+
+- [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API)
+- [flexdashboard](https://pkgs.rstudio.com/flexdashboard/)
+- [Leaflet for R](https://rstudio.github.io/leaflet/)
+- [plotly for R](https://plotly.com/r/)
+- [GitHub Repository](https://github.com/CelineeUWC/SDS_MP2)
+
 
 
 
