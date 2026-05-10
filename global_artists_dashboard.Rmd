@@ -1,0 +1,768 @@
+---
+title: "Global Artists"
+runtime: shiny
+output: 
+  flexdashboard::flex_dashboard:
+    theme:
+      version: 5
+    navbar:
+      - { title: "GitHub", href: "https://github.com/CelineeUWC/SDS_MP2", align: right, icon: "fa-github" }
+    source_code: embed
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+library(readr)
+library(plotly)
+library(flexdashboard)
+library(shinyWidgets)
+library(gt)
+library(shiny)
+library(maps)
+library(viridis)
+library(leaflet)
+library(htmltools)
+library(glue)
+```
+
+```{r load-and-clean, echo=FALSE}
+# ── Load data ──────────────────────────────────────────────────────────────────
+artists <- read_csv("global_music.csv") |>
+  select(-`...1`)   # drop the auto-index column R adds on read
+
+# standardise country names
+# We convert everything to lowercase FIRST, then recode, so there are no
+# capitalisation mismatches when we later join to map_data("world").
+artists <- artists |>
+  mutate(Country = tolower(trimws(Country))) |>
+  mutate(Country = recode(Country,
+    "united states"       = "usa",
+    "united kingdom"      = "uk",
+    "england"             = "uk",
+    "scotland"            = "uk",
+    "wales"               = "uk",
+    "northern ireland"    = "uk",
+    "los angeles"         = "usa",
+    "new york"            = "usa",
+    "south korea"         = "south korea",
+    "republic of ireland" = "ireland"
+  ))
+
+# country  lookup from the maps package
+# map_data("world") gives one row per polygon vertex, so we collapse each
+# country down to a single average lat/lon to use as a map marker position.
+country_coords <- map_data("world") |>
+  mutate(region = tolower(region)) |>
+  group_by(region) |>
+  summarize(
+    Longitude = mean(long, na.rm = TRUE),
+    Latitude  = mean(lat,  na.rm = TRUE),
+    .groups   = "drop"
+  )
+
+# join coordinates onto the artist rows 
+# artists whose country didn't match any map region will get NA coords and
+# simply won't appear as dots on the leaflet map
+artists_map <- artists |>
+  left_join(country_coords, by = c("Country" = "region"))
+
+# pre-build filter choice vectors (used by every sidebar)
+all_genres    <- c("All", sort(unique(na.omit(artists$Top_Genre))))
+all_types     <- c("All", sort(unique(na.omit(artists$Type))))
+all_genders   <- c("All", sort(unique(na.omit(artists$Gender))))
+all_countries <- c("All", sort(unique(na.omit(artists$Country))))
+age_range     <- range(artists$Age, na.rm = TRUE)
+```
+
+
+Home
+================================================================================
+
+Column {data-width=480}
+--------------------------------------------------------------------------------
+
+### About This Project
+
+Welcome to the **Global Artists Dashboard** a data-driven exploration of
+some of our favorite music artists from around the world.
+
+---
+
+#### Data Source
+
+All artist data was collected from the
+[**MusicBrainz API**](https://musicbrainz.org/doc/MusicBrainz_API), an open
+music encyclopedia that records metadata about artists, releases, and
+recordings worldwide.
+
+---
+
+#### How We Built the Dataset
+
+| Step | Action |
+|------|--------|
+| 1 | Queried the MusicBrainz REST API across multiple genres and regions |
+| 2 | Extracted artist metadata (ratings, tags, type, area) |
+| 3 | Derived **Collab_Count** by counting credited artist relationships |
+| 4 | Derived **Age** from career-begin dates |
+| 5 | Merged with `map_data("world")` centroids for geographic coordinates |
+| 6 | Cleaned and standardised country names for joining |
+
+---
+
+#### Variables in the Dataset
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `Artist` | Categorical | Artist or group name |
+| `Type` | Categorical | *Person* (solo) or *Group* |
+| `Gender` | Categorical | Gender of solo artist |
+| `Top_Genre` | Categorical | Primary musical genre |
+| `Country` | Categorical | Country of origin |
+| `Hometown` | Categorical | City/region of origin |
+| `Is_Active` | Binary Categorical | Whether artist is still active |
+| `User_Rating` | Numerical | Avg. user rating (0–5) |
+| `Rating_Votes` | Numerical | Number of user votes |
+| `Collab_Count` | Numerical | Count of credited collaborations |
+| `Age` | Numerical | Years since career began |
+| `Album_Count` | Numerical | Number of albums |
+| `Recording_Count` | Numerical | Number of recordings |
+
+The full code and raw data live on our
+[**GitHub Repository →**](https://github.com/CelineeUWC/SDS_MP2)
+
+Column {data-width=520}
+--------------------------------------------------------------------------------
+
+### Dataset at a Glance
+
+```{r home-kpi}
+n_artists   <- nrow(artists)
+n_countries <- n_distinct(artists$Country,   na.rm = TRUE)
+n_genres    <- n_distinct(artists$Top_Genre, na.rm = TRUE)
+avg_rating  <- round(mean(artists$User_Rating, na.rm = TRUE), 2)
+
+tibble(
+  Metric = c("Total Artists", "Countries Represented",
+             "Genres Represented", "Avg. User Rating"),
+  Value  = c(
+    format(n_artists, big.mark = ","),
+    as.character(n_countries),
+    as.character(n_genres),
+    paste0(avg_rating, " / 5")
+  )
+) |>
+  gt() |>
+  tab_header(title = "Dataset Overview") |>
+  cols_align("center", columns = Value) |>
+  tab_style(
+    style     = list(cell_fill(color = "#eef2ff"), cell_text(weight = "bold")),
+    locations = cells_column_labels()
+  )
+```
+
+### Sample of the Data
+
+```{r home-table}
+artists |>
+  select(Artist, Country, Top_Genre, Type, Gender,
+         Age, User_Rating, Rating_Votes, Collab_Count, Is_Active) |>
+  slice_head(n = 15) |>
+  gt() |>
+  cols_label(
+    Top_Genre    = "Genre",
+    User_Rating  = "Rating",
+    Rating_Votes = "Votes",
+    Collab_Count = "Collabs",
+    Is_Active    = "Active"
+  ) |>
+  fmt_number(columns = User_Rating, decimals = 2)
+```
+
+
+About
+================================================================================
+
+Column {data-width=420}
+--------------------------------------------------------------------------------
+
+### Research Questions
+
+This project investigates **what makes a music artist popular** by analyzing
+artist characteristics, geography, age, and collaboration behavior.
+
+---
+
+#### Popularity & Ratings
+1. What factors are most associated with higher user ratings?
+2. How do genre, type (solo vs group), and country relate to ratings?
+
+####  Age & Career
+3. At what age do most highly-rated **solo artists** begin their careers?
+4. How are age and genre related in this data set?
+
+####  Geography
+5. Does an artist's location affect their popularity?
+
+####  Collaboration
+6. Are younger artists collaborating more than older artists?
+7. How does collaboration vary by artist type (group vs person)?
+
+Column {data-width=580}
+--------------------------------------------------------------------------------
+
+### Summary Statistics by Artist Type
+
+```{r about-summary}
+artists |>
+  filter(!is.na(Type)) |>
+  group_by(Type) |>
+  summarize(
+    Count       = n(),
+    Avg_Rating  = round(mean(User_Rating,  na.rm = TRUE), 2),
+    Median_Age  = median(Age,              na.rm = TRUE),
+    Avg_Collabs = round(mean(Collab_Count, na.rm = TRUE), 1),
+    Avg_Albums  = round(mean(Album_Count,  na.rm = TRUE), 1),
+    .groups     = "drop"
+  ) |>
+  gt() |>
+  cols_label(
+    Avg_Rating  = "Avg Rating",
+    Median_Age  = "Median Age",
+    Avg_Collabs = "Avg Collabs",
+    Avg_Albums  = "Avg Albums"
+  )
+```
+
+### Genre Distribution
+
+```{r about-genre-bar}
+# EXAMPLE: horizontal bar chart coloured by count using the Viridis palette.
+# reorder() makes the longest bars appear at the top.
+artists |>
+  count(Top_Genre, sort = TRUE) |>
+  filter(!is.na(Top_Genre)) |>
+  slice_head(n = 15) |>
+  plot_ly(
+    x           = ~n,
+    y           = ~reorder(Top_Genre, n),
+    type        = "bar",
+    orientation = "h",
+    marker      = list(color = ~n, colorscale = "Viridis", showscale = FALSE)
+  ) |>
+  layout(
+    title  = "Top 15 Genres by Artist Count",
+    xaxis  = list(title = "Number of Artists"),
+    yaxis  = list(title = ""),
+    margin = list(l = 150)
+  )
+```
+
+### Rating by Genre — Boxplot
+
+```{r about-genre-box}
+# EXAMPLE: boxplot showing the spread of User_Rating within each genre.
+# This reveals which genres have consistently high vs. variable ratings.
+artists |>
+  filter(!is.na(Top_Genre), !is.na(User_Rating)) |>
+  mutate(Top_Genre = fct_reorder(Top_Genre, User_Rating, median)) |>
+  plot_ly(
+    x    = ~User_Rating,
+    y    = ~Top_Genre,
+    type = "box",
+    orientation = "h",
+    marker = list(color = "#4361ee"),
+    line   = list(color = "#4361ee")
+  ) |>
+  layout(
+    title  = "User Rating Distribution by Genre",
+    xaxis  = list(title = "User Rating (0–5)", range = c(0, 5)),
+    yaxis  = list(title = ""),
+    margin = list(l = 150)
+  )
+```
+
+
+Maps
+================================================================================
+
+Column {.sidebar data-width=260}
+--------------------------------------------------------------------------------
+
+**Map Filters**
+
+```{r map-sidebar}
+selectInput("map_genre", "Genre:",
+            choices = all_genres, selected = "All")
+
+selectInput("map_type", "Artist Type:",
+            choices = all_types, selected = "All")
+
+selectInput("map_active", "Active Status:",
+            choices = c("All", "TRUE", "FALSE"), selected = "All")
+
+sliderInput("map_rating", "Min. User Rating:",
+            min = 0, max = 5, value = 0, step = 0.25)
+
+hr()
+p(em("Circle size = rating. Click any marker for full details."))
+```
+
+Column {data-width=700}
+--------------------------------------------------------------------------------
+
+### Interactive World Map of Artists
+
+```{r map-leaflet}
+# reactive filter
+# every time a sidebar input changes, R re-runs this reactive block and the
+# map below automatically redraws with only the matching rows.
+map_data_r <- reactive({
+  df <- artists_map |> filter(!is.na(Longitude), !is.na(Latitude))
+  if (input$map_genre  != "All") df <- df |> filter(Top_Genre == input$map_genre)
+  if (input$map_type   != "All") df <- df |> filter(Type      == input$map_type)
+  if (input$map_active != "All")
+    df <- df |> filter(as.character(Is_Active) == input$map_active)
+  df <- df |> filter(is.na(User_Rating) | User_Rating >= input$map_rating)
+  df
+})
+
+renderLeaflet({
+  df  <- map_data_r()
+  # colorNumeric maps a continuous variable (User_Rating 0–5) to a colour ramp.
+  pal <- colorNumeric("YlOrRd", domain = c(0, 5), na.color = "#aaaaaa")
+
+  leaflet(df) |>
+    addProviderTiles(providers$CartoDB.Positron) |>  # clean greyscale base map
+    setView(lng = 10, lat = 25, zoom = 2) |>
+    addCircleMarkers(
+      # jitter slightly so artists in the same country don't all stack exactly
+      lng         = ~jitter(Longitude, factor = 0.8),
+      lat         = ~jitter(Latitude,  factor = 0.8),
+      # larger circle = higher rating
+      radius      = ~ifelse(is.na(User_Rating), 5, 3 + User_Rating * 2),
+      fillColor   = ~pal(User_Rating),
+      fillOpacity = 0.85,
+      stroke      = TRUE,
+      weight      = 0.8,
+      color       = "white",
+      # html popup shown when user clicks a marker
+      popup = ~paste0(
+        "<b style='font-size:14px'>", Artist, "</b><br>",
+        "<hr style='margin:4px 0'>",
+        " <b>Country:</b> ",  str_to_title(Country), "<br>",
+        "️ <b>Hometown:</b> ", ifelse(is.na(Hometown),  "Unknown", Hometown),  "<br>",
+        " <b>Genre:</b> ",    ifelse(is.na(Top_Genre), "Unknown", Top_Genre), "<br>",
+        " <b>Type:</b> ",     ifelse(is.na(Type),      "Unknown", Type),      "<br>",
+        " <b>Rating:</b> ",   ifelse(is.na(User_Rating), "N/A",
+                                       paste0(round(User_Rating, 2), " / 5")),  "<br>",
+        " <b>Age:</b> ",      ifelse(is.na(Age), "N/A", Age),                 "<br>",
+        " <b>Collabs:</b> ",  ifelse(is.na(Collab_Count), "N/A", Collab_Count)
+      ),
+      label = ~Artist   # tooltip shown on hover (no click needed)
+    ) |>
+    addLegend("bottomright",
+              pal     = pal,
+              values  = ~User_Rating,
+              title   = "User Rating",
+              opacity = 0.85)
+})
+```
+
+Column {data-width=300}
+--------------------------------------------------------------------------------
+
+### Artists Shown
+
+```{r map-vbox}
+renderValueBox({
+  valueBox(nrow(map_data_r()), "Artists on Map",
+           icon = "fa-map-marker", color = "primary")
+})
+```
+
+### Top 10 Countries (filtered)
+
+```{r map-country-bar}
+# EXAMPLE: reactive bar chart — updates whenever map filters change.
+renderPlotly({
+  map_data_r() |>
+    count(Country, sort = TRUE) |>
+    slice_head(n = 10) |>
+    mutate(Country = str_to_title(Country)) |>
+    plot_ly(
+      x           = ~n,
+      y           = ~reorder(Country, n),
+      type        = "bar",
+      orientation = "h",
+      marker      = list(color = "#4361ee")
+    ) |>
+    layout(
+      xaxis  = list(title = "Artist Count"),
+      yaxis  = list(title = ""),
+      margin = list(l = 110)
+    )
+})
+```
+
+### Avg. Rating by Country (top 10)
+
+```{r map-rating-country}
+# EXAMPLE: compare average rating across the most-represented countries.
+renderPlotly({
+  map_data_r() |>
+    filter(!is.na(User_Rating)) |>
+    group_by(Country) |>
+    summarize(avg_rating = mean(User_Rating, na.rm = TRUE),
+              n          = n(), .groups = "drop") |>
+    filter(n >= 3) |>                        # only countries with 3+ artists
+    arrange(desc(avg_rating)) |>
+    slice_head(n = 10) |>
+    mutate(Country = str_to_title(Country)) |>
+    plot_ly(
+      x           = ~avg_rating,
+      y           = ~reorder(Country, avg_rating),
+      type        = "bar",
+      orientation = "h",
+      marker      = list(color = ~avg_rating,
+                         colorscale = "YlOrRd", showscale = FALSE)
+    ) |>
+    layout(
+      xaxis  = list(title = "Avg. User Rating", range = c(0, 5)),
+      yaxis  = list(title = ""),
+      margin = list(l = 110)
+    )
+})
+```
+
+
+Artist Analysis
+================================================================================
+
+Column {.sidebar data-width=260}
+--------------------------------------------------------------------------------
+
+**Analysis Filters**
+
+```{r analysis-sidebar}
+selectInput("an_country", "Country:",
+            choices = all_countries, selected = "All")
+
+selectInput("an_type", "Artist Type:",
+            choices = all_types, selected = "All")
+
+selectInput("an_gender", "Gender:",
+            choices = all_genders, selected = "All")
+
+selectInput("an_genre", "Genre:",
+            choices = all_genres, selected = "All")
+
+sliderInput("an_votes", "Min. Rating Votes:",
+            min   = 0,
+            max   = max(artists$Rating_Votes, na.rm = TRUE),
+            value = 0,
+            step  = 5)
+```
+
+Column {data-width=500}
+--------------------------------------------------------------------------------
+
+### User Rating Distribution
+
+```{r an-hist}
+# Reactive dataset: re-filters whenever any sidebar input changes
+an_data <- reactive({
+  df <- artists
+  if (input$an_country != "All") df <- df |> filter(Country   == input$an_country)
+  if (input$an_type    != "All") df <- df |> filter(Type      == input$an_type)
+  if (input$an_gender  != "All") df <- df |> filter(Gender    == input$an_gender)
+  if (input$an_genre   != "All") df <- df |> filter(Top_Genre == input$an_genre)
+  df <- df |> filter(is.na(Rating_Votes) | Rating_Votes >= input$an_votes)
+  df
+})
+
+# EXAMPLE: histogram of User_Rating — shows whether most artists cluster
+# toward the middle or at the extremes.
+renderPlotly({
+  plot_ly(an_data(), x = ~User_Rating, type = "histogram", nbinsx = 20,
+          marker = list(color = "#4361ee",
+                        line  = list(color = "white", width = 0.8))) |>
+    layout(
+      xaxis = list(title = "User Rating (out of 5)", range = c(0, 5)),
+      yaxis = list(title = "Count")
+    )
+})
+```
+
+
+###  Album Count vs. User Rating
+
+```{r an-albums-scatter}
+# EXAMPLE: does releasing more albums correlate with a higher rating?
+# Log-scale x-axis handles the right-skewed album counts better.
+renderPlotly({
+  df <- an_data() |> filter(!is.na(Album_Count), !is.na(User_Rating), Album_Count > 0)
+  plot_ly(df,
+          x     = ~Album_Count,
+          y     = ~User_Rating,
+          type  = "scatter",
+          mode  = "markers",
+          color = ~Type,
+          text  = ~Artist,
+          hovertemplate = "<b>%{text}</b><br>Albums: %{x}<br>Rating: %{y:.2f}<extra></extra>",
+          marker = list(size = 7, opacity = 0.65)) |>
+    layout(
+      xaxis  = list(title = "Album Count", type = "log"),
+      yaxis  = list(title = "User Rating (0–5)"),
+      legend = list(title = list(text = "Type"))
+    )
+})
+```
+
+Column {data-width=500}
+--------------------------------------------------------------------------------
+
+###  Top 15 Artists by Rating
+
+```{r an-top-artists}
+# EXAMPLE: horizontal bar chart of the highest-rated artists.
+# Only artists with at least 1 Rating_Vote are included so that an artist
+# with a single 5-star vote doesn't dominate.
+renderPlotly({
+  an_data() |>
+    filter(!is.na(User_Rating), !is.na(Artist), !is.na(Rating_Votes)) |>
+    arrange(desc(User_Rating)) |>
+    slice_head(n = 15) |>
+    mutate(label = paste0(Artist, " (", str_to_title(Country), ")")) |>
+    plot_ly(
+      x           = ~User_Rating,
+      y           = ~reorder(label, User_Rating),
+      type        = "bar",
+      orientation = "h",
+      marker      = list(color      = ~User_Rating,
+                         colorscale = "YlOrRd",
+                         showscale  = FALSE),
+      hovertemplate = "<b>%{y}</b><br>Rating: %{x:.2f}<extra></extra>"
+    ) |>
+    layout(
+      xaxis  = list(title = "User Rating", range = c(0, 5)),
+      yaxis  = list(title = ""),
+      margin = list(l = 230)
+    )
+})
+```
+
+
+
+
+Collabs
+================================================================================
+
+Column {.sidebar data-width=260}
+--------------------------------------------------------------------------------
+
+**Collaboration Filters**
+
+```{r collab-sidebar}
+sliderInput("col_age", "Artist Age Range:",
+            min   = floor(age_range[1]),
+            max   = ceiling(age_range[2]),
+            value = c(floor(age_range[1]), ceiling(age_range[2])),
+            step  = 1)
+
+selectInput("col_type", "Artist Type:",
+            choices = all_types, selected = "All")
+
+selectInput("col_genre", "Genre:",
+            choices = all_genres, selected = "All")
+
+selectInput("col_active", "Active Status:",
+            choices = c("All", "TRUE", "FALSE"), selected = "All")
+```
+
+Column {data-width=580}
+--------------------------------------------------------------------------------
+
+###  Age vs. Collaboration Count
+
+```{r collab-scatter}
+col_data <- reactive({
+  df <- artists |>
+    filter(!is.na(Age), !is.na(Collab_Count)) |>
+    filter(Age >= input$col_age[1], Age <= input$col_age[2])
+  if (input$col_type   != "All") df <- df |> filter(Type      == input$col_type)
+  if (input$col_genre  != "All") df <- df |> filter(Top_Genre == input$col_genre)
+  if (input$col_active != "All")
+    df <- df |> filter(as.character(Is_Active) == input$col_active)
+  df
+})
+
+# scatterplot with an optional linear trend line.
+# The trend line is built with lm() and added via add_lines().
+# We guard with nrow >= 5 so the model doesn't crash on tiny subsets.
+renderPlotly({
+  df <- col_data()
+
+  p <- plot_ly(df,
+               x     = ~Age,
+               y     = ~Collab_Count,
+               type  = "scatter",
+               mode  = "markers",
+               color = ~Type,
+               text  = ~Artist,
+               hovertemplate = "<b>%{text}</b><br>Age: %{x}<br>Collabs: %{y}<extra></extra>",
+               marker = list(size = 8, opacity = 0.7))
+
+  if (nrow(df) >= 5 && sd(df$Age, na.rm = TRUE) > 0) {
+    fit <- lm(Collab_Count ~ Age, data = df)
+    p <- p |>
+      add_lines(x          = ~Age,
+                y          = fitted(fit),
+                name       = "Linear trend",
+                line       = list(color = "red", dash = "dash", width = 2),
+                inherit    = FALSE,
+                showlegend = TRUE)
+  }
+
+  p |> layout(
+    xaxis  = list(title = "Artist Age (years)"),
+    yaxis  = list(title = "Collaboration Count"),
+    legend = list(title = list(text = "Type"))
+  )
+})
+```
+
+
+
+###  Collab Count vs. User Rating
+
+```{r collab-rating-scatter}
+# do artists who collaborate more also get rated higher?
+# This directly addresses research question 6.
+renderPlotly({
+  col_data() |>
+    filter(!is.na(User_Rating)) |>
+    plot_ly(x     = ~Collab_Count,
+            y     = ~User_Rating,
+            type  = "scatter",
+            mode  = "markers",
+            color = ~Type,
+            text  = ~Artist,
+            hovertemplate = "<b>%{text}</b><br>Collabs: %{x}<br>Rating: %{y:.2f}<extra></extra>",
+            marker = list(size = 7, opacity = 0.65)) |>
+    layout(
+      xaxis  = list(title = "Collaboration Count"),
+      yaxis  = list(title = "User Rating (0–5)"),
+      legend = list(title = list(text = "Type"))
+    )
+})
+```
+
+Column {data-width=420}
+--------------------------------------------------------------------------------
+
+###  Collab Count by Artist Type
+
+```{r collab-box}
+# EXAMPLE: boxplot comparing collab distributions for Person vs Group.
+# "outliers" shows individual dots for extreme values.
+renderPlotly({
+  col_data() |>
+    filter(!is.na(Type)) |>
+    plot_ly(y         = ~Collab_Count,
+            color     = ~Type,
+            type      = "box",
+            colors    = c("#4361ee", "#f72585"),
+            boxpoints = "outliers") |>
+    layout(
+      yaxis  = list(title = "Collaboration Count"),
+      xaxis  = list(title = "Artist Type"),
+      legend = list(title = list(text = "Type"))
+    )
+})
+```
+
+
+### Summary Table
+
+```{r collab-table}
+renderTable({
+  col_data() |>
+    filter(!is.na(Type)) |>
+    group_by(Type) |>
+    summarize(
+      Artists       = n(),
+      `Avg Collabs` = round(mean(Collab_Count, na.rm = TRUE), 2),
+      Median        = median(Collab_Count,     na.rm = TRUE),
+      Max           = max(Collab_Count,        na.rm = TRUE),
+      .groups       = "drop"
+    )
+}, striped = TRUE, hover = TRUE, bordered = TRUE)
+```
+
+
+Conclusion
+================================================================================
+
+Column {data-width=500}
+--------------------------------------------------------------------------------
+
+###  Key Findings
+
+---
+
+#### Geographic Distribution
+- Artists are concentrated in the **USA**, **UK**, and **Canada**, reflecting
+  MusicBrainz's stronger coverage of Western artists.
+- Country of origin shows a weak direct relationship with rating;
+  **genre** is a stronger predictor of popularity.
+
+---
+
+#### Popularity & Ratings
+- **Genre** is among the strongest predictors of user ratings — certain genres
+  consistently attract higher scores.
+- Artists with few `Rating_Votes` display extreme highs and lows; those with
+  many votes converge toward the mid-range (regression to the mean).
+- No strong relationship was found between **age** and rating alone.
+
+---
+
+####  Age & Career
+- Most highly-rated solo artists began their careers in their **20s**.
+- Older artists show slightly higher collaboration counts,
+  consistent with longer time in the industry.
+
+---
+
+####  Collaboration Patterns
+- **Groups** tend to have higher `Collab_Count` than solo artists.
+- Collaboration count shows only a weak relationship with user rating,
+  suggesting popularity is driven more by genre and reach than volume of work.
+
+Column {data-width=500}
+--------------------------------------------------------------------------------
+
+### ️ Limitations
+
+| Limitation | Detail |
+|------------|--------|
+| Western bias | MusicBrainz has denser coverage of US/UK artists |
+| Crowd-sourced ratings | Ratings reflect listener demographics, not objective quality |
+| Our favorite artists| We picked the artists in this dataset |
+| Collab undercounting | Informal collaborations not in MusicBrainz are excluded |
+| Country cleaning | We were only allowed 25 requests and therefore there is some counts limited to 25|
+
+
+
+### References
+
+- [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API)
+- [flexdashboard](https://pkgs.rstudio.com/flexdashboard/)
+- [Leaflet for R](https://rstudio.github.io/leaflet/)
+- [plotly for R](https://plotly.com/r/)
+- [GitHub Repository](https://github.com/CelineeUWC/SDS_MP2)
