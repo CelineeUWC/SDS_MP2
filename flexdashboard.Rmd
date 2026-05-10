@@ -33,13 +33,13 @@ library(glue)
 
 
 ```{r load-and-clean, echo=FALSE}
-# ── Load data ──────────────────────────────────────────────────────────────────
+# load data
 artists <- read_csv("global_music.csv") |>
   select(-`...1`)   # drop the auto-index column R adds on read
 
-# standardise country names
-# We convert everything to lowercase FIRST, then recode, so there are no
-# capitalisation mismatches when we later join to map_data("world").
+# standardize country names
+# We convert everything to lowercase FIRST, then rename, so there are no
+# capitalization mismatches when we later join to map_data("world").
 artists <- artists |>
   mutate(Country = tolower(trimws(Country))) |>
   mutate(Country = recode(Country,
@@ -72,6 +72,13 @@ country_coords <- map_data("world") |>
 # simply won't appear as dots on the leaflet map
 artists_map <- artists |>
   left_join(country_coords, by = c("Country" = "region"))
+
+# mutate to add hometown coordinates k
+
+artists_map <- artists_map |>
+  mutate(
+    Hometown
+  )
 
 # pre-build filter choice vectors (used by every sidebar)
 all_genres    <- c("All", sort(unique(na.omit(artists$Top_Genre))))
