@@ -74,12 +74,28 @@ artists_map <- artists |>
 
 # in load-and-clean chunk, run once, then always read from cache
 if (!file.exists("artists_geocoded.csv")) {
+
+  # create better addresses
   artists_map <- artists_map |>
-    geocode(address = Hometown, method = "osm",
-            long = Hometown_long, lat = Hometown_lat)
+    mutate(
+      full_location = paste(Hometown, Country, sep = ", ")
+    )
+
+  # geocode
+  artists_map <- artists_map |>
+    geocode(
+      address = full_location,
+      method = "arcgis",
+      long = Hometown_long,
+      lat = Hometown_lat
+    )
+
   write_csv(artists_map, "artists_geocoded.csv")
+
 } else {
+
   artists_map <- read_csv("artists_geocoded.csv")
+
 }
 
 # pre-build filter choice vectors (used by every sidebar)
