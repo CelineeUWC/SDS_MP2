@@ -216,26 +216,21 @@ Column {data-width=540}
 
 ### Research Questions
 
-This project explores **what makes a music artist popular** by analyzing 
-artist characteristics, geography, age, and collaboration behavior across 
-our sample of 96 manually selected artists from MusicBrainz.
+This project explores patterns in artist ratings, collaboration behavior, and geography among a sample of 96 global music artists from MusicBrainz.
 
 ---
 
-#### Popularity & Ratings
-1. What factors are most associated with higher user ratings?
-2. How do genre, type (solo vs group), and country relate to ratings?
+#### Ratings & Artist Characteristics
+1. How do user ratings vary across genres, artist types, and countries?
+2. Do active and inactive artists differ in their rating distributions?
 
-####  Age & Career
-3. At what age do most highly-rated **solo artists** begin their careers?
-4. How are age and genre related in this data set?
+####  Collaboration & Career Patterns
+3. How does collaboration count vary by artist type?
+4. Is there a relationship between artist age and collaboration count?
 
 ####  Geography
-5. Does an artist's location affect their popularity?
-
-####  Collaboration
-6. Are younger artists collaborating more than older artists?
-7. How does collaboration vary by artist type (group vs person)?
+5. How are artists geographically distributed within this sample?
+6. Do rating patterns appear to differ across countries?
 
 ---
 
@@ -360,7 +355,7 @@ renderLeaflet({
 ```
 
 ### Findings
-Within our sample, most artists cluster in the USA, UK, and Canada, with smaller concentrations in Lebanon and Mexico. Circle size (rating) doesn't appear to concentrate in any single region, suggesting that within this curated group, geography alone is not a strong predictor of user rating.
+Within our sample, most artists cluster in the USA, UK, and Canada, with smaller concentrations in Lebanon and Mexico. Circle size (rating) doesn't appear to concentrate in any single region, suggesting that within this curated group, no clear geographic pattern in user ratings appeared within this sample.
 
 
 Country Analysis
@@ -810,6 +805,8 @@ and more generalizable conclusions.
 
 ### Limitations
 This project is best understood as an exploratory analysis of a convenience sample, similar to how a researcher might pilot a study before designing a larger one. The value is in the dashboard itself and the patterns it surfaces, not in generalization.
+
+### Limitations
 
 ### References
 - [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API)
