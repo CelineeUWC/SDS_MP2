@@ -211,12 +211,14 @@ artists |>
 About
 ================================================================================
 
-
+Column {data-width=540}
+--------------------------------------------------------------------------------
 
 ### Research Questions
 
-This project investigates **what makes a music artist popular** by analyzing
-artist characteristics, geography, age, and collaboration behavior.
+This project explores **what makes a music artist popular** by analyzing 
+artist characteristics, geography, age, and collaboration behavior across 
+our sample of 96 manually selected artists from MusicBrainz.
 
 ---
 
@@ -235,7 +237,14 @@ artist characteristics, geography, age, and collaboration behavior.
 6. Are younger artists collaborating more than older artists?
 7. How does collaboration vary by artist type (group vs person)?
 
+---
 
+*Each tab in this dashboard addresses one or more of these questions 
+through interactive visualizations.*
+
+
+Column {data-width=460}
+--------------------------------------------------------------------------------
 ### Summary Statistics by Artist Type
 
 ```{r about-summary}
@@ -256,7 +265,9 @@ artists |>
     Median_Age  = "Median Age",
     Avg_Collabs = "Avg Collabs",
     Avg_Albums  = "Avg Albums"
-  )
+  ) |>
+  tab_footnote("Based on 96 manually selected artists from MusicBrainz")
+
 ```
 
 
