@@ -269,7 +269,7 @@ Column {.sidebar data-width=260}
 **Map Filters**
 
 ```{r map-sidebar}
-control <- c( "Genre:","Artist Type:")
+
 selectInput("map_genre", "Genre:",
             choices = all_genres, selected = "All")
 
@@ -351,6 +351,7 @@ renderLeaflet({
 ### Findings
 Within our sample, most artists cluster in the USA, UK, and Canada, with smaller concentrations in Lebanon and Mexico. Circle size (rating) doesn't appear to concentrate in any single region, suggesting that within this curated group, geography alone is not a strong predictor of user rating.
 
+
 Country Analysis
 ==========================
 
@@ -369,31 +370,32 @@ selectInput(
 ```
 
 
+Column {data-width=200}
+--------------------------------------------------------------------------------
+
 
 ```{r,echo=FALSE}
 artist_leb <- artists_map |>
   select(Artist,Country, Hometown_lat, Hometown_long, Hometown)|>
   filter(Country == "lebanon")
 
-artist_mex <-  artists_map |>
-  select(Artist,Country, Hometown_lat,Hometown_long, Hometown)|>
+artist_mex <- artists_map |>
+  select(Artist,Country,Hometown_lat,Hometown_long, Hometown)|>
   filter(Country == "mexico")
 
-artist_usa <-  artists_map |>
-  select(Artist,Country,  Hometown_lat, Hometown_long, Hometown)|>
+artist_usa <- artists_map |>
+  select(Artist,Country, Hometown_lat, Hometown_long, Hometown)|>
   filter(Country == "usa") 
 
-artist_uk <-  artists_map |>
-  select(Artist,Country,  Hometown_lat, Hometown_long, Hometown)|>
+artist_uk <- artists_map |>
+  select(Artist,Country, Hometown_lat,Hometown_long, Hometown)|>
   filter(Country == "uk")
-artist_can <-  artists_map |>
-  select(Artist,Country,  Hometown_lat, Hometown_long, Hometown)|>
+artist_can <- artists_map |>
+  select(Artist,Country, Hometown_lat,Hometown_long, Hometown)|>
   filter(Country == "canada")
 
 ```
 
-Column {data-width=200}
---------------------------------------------------------------------------------
 
 ### Map
 
@@ -402,7 +404,6 @@ Column {data-width=200}
 output$map <- renderLeaflet({
 
   if (input$n_breaks == "lebanon") {
-
     leaflet() |>
       addTiles() |>
       setView(lng = mean(artist_leb$Hometown_long), lat = mean(artist_leb$Hometown_lat), zoom = 6) |>
@@ -475,12 +476,11 @@ Column {data-width=200}
 --------------------------------------------------------------------------------
 ### User Rating Plot
 
-```{r,echo=FALSE}
-renderPlotly({
 
-  if (input$n_breaks == "lebanon") {
-    artists |> 
-      filter(Country == "lebanon") |>
+```{r}
+artist_plot <- function(country_name) {
+  artists |> 
+      filter(Country == country_name) |>
      plot_ly(
         x = ~Artist,
         y = ~User_Rating,
@@ -494,86 +494,23 @@ renderPlotly({
         yaxis = list(title = "User Rating"),
         barmode = "group"
       )
-  } else if (input$n_breaks == "mexico") {
-    artists |> 
-      filter(Country == "mexico") |>
-      plot_ly(
-        x = ~Artist,
-        y = ~User_Rating,
-        type = "bar",
-        color = ~Gender,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Artist"),
-        yaxis = list(title = "User Rating"),
-        barmode = "group"
-      )
-
-  } else if (input$n_breaks == "usa") {
-    artists |> 
-      filter(Country == "usa") |>
-      plot_ly(
-        x = ~Artist,
-        y = ~User_Rating,
-        type = "bar",
-        color = ~Gender,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Artist"),
-        yaxis = list(title = "User Rating"),
-        barmode = "group"
-      )
-  }  else if (input$n_breaks == "uk") {
-    artists |> 
-      filter(Country == "uk") |>
-      plot_ly(
-        x = ~Artist,
-        y = ~User_Rating,
-        type = "bar",
-        color = ~Gender,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Artist"),
-        yaxis = list(title = "User Rating"),
-        barmode = "group"
-      )
-    
-  } else if (input$n_breaks == "canada") {
-    artists |> 
-      filter(Country == "canada") |>
-      plot_ly(
-        x = ~Artist,
-        y = ~User_Rating,
-        type = "bar",
-        color = ~Gender,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Artist"),
-        yaxis = list(title = "User Rating"),
-        barmode = "group"
-      )
-  }
-
-})
-
+} 
+  
 ```
+
+```{r}
+renderPlotly({
+  artist_plot(input$n_breaks)
+})
+```
+
 
 ### Collabration Plot
 
 ```{r, echo=FALSE}
-renderPlotly({
-
-  if (input$n_breaks == "lebanon") {
+collab_plot <- function(country_name) {
     artists |>
-      filter(Country == "lebanon") |>
+      filter(Country == country_name) |>
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
@@ -587,74 +524,15 @@ renderPlotly({
         yaxis = list(title = "Collab Count"),
         barmode = "group"
       )
-  } else if (input$n_breaks == "mexico") {
-   artists |> 
-      filter(Country == "mexico") |>
-      plot_ly(
-        x = ~Age,
-        y = ~Collab_Count,
-        type = "scatter",
-        color = ~Artist,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Age"),
-        yaxis = list(title = "Collab Count"),
-        barmode = "group"
-      )
-  } else if (input$n_breaks == "usa") {
-    artists |> 
-      filter(Country == "usa") |>
-      plot_ly(
-        x = ~Age,
-        y = ~Collab_Count,
-        type = "scatter",
-        color = ~Artist,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Age"),
-        yaxis = list(title = "Collab Count"),
-        barmode = "group"
-      )
-  }  else if (input$n_breaks == "uk") {
-    artists |> 
-      filter(Country == "uk") |>
-      plot_ly(
-        x = ~Age,
-        y = ~Collab_Count,
-        type = "scatter",
-        color = ~Artist,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Age"),
-        yaxis = list(title = "Collab Count"),
-        barmode = "group"
-      )
-  } else if (input$n_breaks == "canada") {
-   artists |> 
-      filter(Country == "canada") |>
-      plot_ly(
-        x = ~Age,
-        y = ~Collab_Count,
-        type = "scatter",
-        color = ~Artist,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Age"),
-        yaxis = list(title = "Collab Count"),
-        barmode = "group"
-      )
+    
 }
 
-})
+```
 
+```{r}
+renderPlotly({
+  collab_plot(input$n_breaks)
+})
 ```
 
 ### Findings

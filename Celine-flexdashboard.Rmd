@@ -434,6 +434,105 @@ renderPlotly({
 
 
 
+
+```{r}
+```{r}
+renderPlotly({
+  artist_plot(input$n_breaks)
+})
+```
+
+```{r,echo=FALSE}
+renderPlotly({
+
+  if (input$n_breaks == "lebanon") {
+    artists |> 
+      filter(Country == "lebanon") |>
+     plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
+  } else if (input$n_breaks == "mexico") {
+    artists |> 
+      filter(Country == "mexico") |>
+      plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
+
+  } else if (input$n_breaks == "usa") {
+    artists |> 
+      filter(Country == "usa") |>
+      plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
+  }  else if (input$n_breaks == "uk") {
+    artists |> 
+      filter(Country == "uk") |>
+      plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
+    
+  } else if (input$n_breaks == "canada") {
+    artists |> 
+      filter(Country == "canada") |>
+      plot_ly(
+        x = ~Artist,
+        y = ~User_Rating,
+        type = "bar",
+        color = ~Gender,
+        text = ~Artist,
+        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      ) |>
+      layout(
+        xaxis = list(title = "Artist"),
+        yaxis = list(title = "User Rating"),
+        barmode = "group"
+      )
+  }
+
+})
+
+```
+
 # Collabs
 
 # Conclusion
