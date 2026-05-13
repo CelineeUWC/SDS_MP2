@@ -269,6 +269,7 @@ Column {.sidebar data-width=260}
 **Map Filters**
 
 ```{r map-sidebar}
+control <- c( "Genre:","Artist Type:")
 selectInput("map_genre", "Genre:",
             choices = all_genres, selected = "All")
 
@@ -576,7 +577,7 @@ renderPlotly({
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
-        type = "bar",
+        type = "scatter",
         color = ~Artist,
         text = ~Artist,
         hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
@@ -592,7 +593,7 @@ renderPlotly({
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
-        type = "bar",
+        type = "scatter",
         color = ~Artist,
         text = ~Artist,
         hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
@@ -608,7 +609,7 @@ renderPlotly({
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
-        type = "bar",
+        type = "scatter",
         color = ~Artist,
         text = ~Artist,
         hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
@@ -624,7 +625,7 @@ renderPlotly({
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
-        type = "bar",
+        type = "scatter",
         color = ~Artist,
         text = ~Artist,
         hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
@@ -640,7 +641,7 @@ renderPlotly({
       plot_ly(
         x = ~Age,
         y = ~Collab_Count,
-        type = "bar",
+        type = "scatter",
         color = ~Artist,
         text = ~Artist,
         hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
