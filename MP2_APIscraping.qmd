@@ -61,6 +61,30 @@ artists <- c("The Beatles", "Taylor Swift", "Radiohead", "Daft Punk", "Miles Dav
              "Maroon 5",
              "Sam Smith", "Alicia Keys", "John Legend", "Rauw Alejandro", "Feid",
              "Anitta", "Elton John")
+
+
+#artists <- c(
+  #"Burna Boy", "Rosalía", "Bad Bunny", "BTS", "Angélique Kidjo",
+ # "A. R. Rahman", "Stromae", "Tems", "Shakira", "Ryuichi Sakamoto",
+ # "BLACKPINK", "Wizkid", "Anitta", "Youssou N'Dour", "Taylor Swift",
+ # "Fela Kuti", "KAROL G", "Aya Nakamura", "Caetano Veloso", "Ali Farka Touré",
+  #"Céline Dion", "King Sunny Adé", "Björk", "Rema", "Manu Chao",
+ # "Diljit Dosanjh", "Mitski", "Tyla", "Bebel Gilberto", "Khaled",
+  #"Kendrick Lamar", "Amr Diab", "IU", "Oumou Sangaré", "Juanes",
+  #"Siti Nurhaliza", "Bomba Estéreo", "Yemi Alade", "Nusrat Fateh Ali Khan", "Lorde",
+  #"Fuerza Regida", "Sezen Aksu", "Beyoncé", "Asa", "Mon Laferte",
+ # "Zaz", "Cesária Évora", "Daddy Yankee", "Of Monsters and Men", "Lata Mangeshkar",
+ # "Soolking", "Coldplay", "Ali Zafar", "Fally Ipupa", "Aitana",
+ # "Joji", "Miriam Makeba", "Peso Pluma", "Tinariwen", "Tarkan",
+ # "SZA", "Pabllo Vittar", "Koffi Olomidé", "Rema Namakula", "The Weeknd",
+  #"M.I.A.", "MC Solaar", "Lee Hyori", "Alicia Keys", "Bing Crosby",
+  #"Mafikizolo", "Natalia Lafourcade", "Tamer Hosny", "Anggun", "C. Tangana",
+  #"Zaho de Sagazan", "Yuna", "Chencho Corleone", "MHD", "Elza Soares",
+  #"Nathy Peluso", "Machel Montano", "Aimer", "Orelsan", "Los Fabulosos Cadillacs",
+  #"CKay", "Arijit Singh", "Camila Cabello", "Sauti Sol", "Hikaru Utada",
+ # "Vampire Weekend", "Feid", "Souad Massi", "Bibi", "King Promise",
+  #"Marília Mendonça", "Knaan", "Zaho", "Sho Madjozi", "J Hus"
+3)
              
  
 ##Function that will find artists in database

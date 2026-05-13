@@ -124,7 +124,7 @@ some of our favorite music artists from around the world.
 All artist data was collected from the
 [**MusicBrainz API**](https://musicbrainz.org/doc/MusicBrainz_API), an open
 music encyclopedia that records metadata about artists, releases, and
-recordings worldwide.
+recordings worldwide. This dataset was constructed by manually selecting 96 artists to query through the MusicBrainz API. As a result, findings reflect patterns within this curated sample and cannot be generalized to the broader global music landscape. Future work could use a random or stratified sample to reduce selection bias.
 
 ---
 
@@ -347,7 +347,7 @@ renderLeaflet({
 })
 ```
 
-
+Within our sample, most artists cluster in the USA, UK, and Canada, with smaller concentrations in Lebanon and Mexico. Circle size (rating) doesn't appear to concentrate in any single region, suggesting that within this curated group, geography alone is not a strong predictor of user rating.
 
 Country Analysis
 ==========================
@@ -655,8 +655,7 @@ renderPlotly({
 
 ```
 
-
-
+Among the artists in our sample, rating patterns differ by country. US and UK artists show the widest spread of ratings, reflecting the diversity of genres represented in those selections. Lebanese artists in our sample tend to cluster in a narrower rating band. Gender distribution in ratings also varies by country — in some countries the higher-rated artists skew male, while in others ratings are more evenly spread across genders.
 
 Collabs
 ==========================
@@ -784,22 +783,23 @@ renderPlotly({
 })
 ```
 
+Among the artists in our sample, the age vs. collaboration scatter shows a slight positive trend — older artists tend to have higher collaboration counts, likely reflecting more time in the industry. However, the trend line slope is shallow, meaning age alone explains only a small portion of the variation.
 
+
+The collab count vs. user rating scatter shows no strong relationship within our sample, suggesting that collaborating more does not reliably translate to higher ratings for either groups or solo artists.
+
+
+The boxplot most directly addresses research question 7: among our sampled artists, groups had a median collab count of 17 vs. 4 for solo artists, a notable difference that may reflect how group credits are recorded in MusicBrainz.
 
 Conclusion
 ==========================
 
+### Conclusion 
+Taken together, these findings suggest that within our sample of 96 manually selected artists, artist type (group vs. solo) is the strongest differentiator in collaboration behavior, while geography and age play more modest roles. Because artists were hand-picked rather than randomly sampled, these patterns should not be generalized to global music trends, they reflect characteristics of this particular curated group. Future work using a randomized or stratified sample would allow for stronger conclusions.
 
 ### References
-
 - [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API)
 - [flexdashboard](https://pkgs.rstudio.com/flexdashboard/)
 - [Leaflet for R](https://rstudio.github.io/leaflet/)
 - [plotly for R](https://plotly.com/r/)
 - [GitHub Repository](https://github.com/CelineeUWC/SDS_MP2)
-
-
-
-
-
-
