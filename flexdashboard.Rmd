@@ -347,6 +347,7 @@ renderLeaflet({
 })
 ```
 
+### Findings
 Within our sample, most artists cluster in the USA, UK, and Canada, with smaller concentrations in Lebanon and Mexico. Circle size (rating) doesn't appear to concentrate in any single region, suggesting that within this curated group, geography alone is not a strong predictor of user rating.
 
 Country Analysis
@@ -655,6 +656,7 @@ renderPlotly({
 
 ```
 
+### Findings
 Among the artists in our sample, rating patterns differ by country. US and UK artists show the widest spread of ratings, reflecting the diversity of genres represented in those selections. Lebanese artists in our sample tend to cluster in a narrower rating band. Gender distribution in ratings also varies by country — in some countries the higher-rated artists skew male, while in others ratings are more evenly spread across genders.
 
 Collabs
@@ -783,7 +785,9 @@ renderPlotly({
 })
 ```
 
-Among the artists in our sample, the age vs. collaboration scatter shows a slight positive trend — older artists tend to have higher collaboration counts, likely reflecting more time in the industry. However, the trend line slope is shallow, meaning age alone explains only a small portion of the variation.
+### Findings
+
+Among the artists in our sample, the age vs. collaboration scatter shows a slight positive trend, older artists tend to have higher collaboration counts, likely reflecting more time in the industry. However, the trend line slope is shallow, meaning age alone explains only a small portion of the variation.
 
 
 The collab count vs. user rating scatter shows no strong relationship within our sample, suggesting that collaborating more does not reliably translate to higher ratings for either groups or solo artists.
@@ -791,15 +795,81 @@ The collab count vs. user rating scatter shows no strong relationship within our
 
 The boxplot most directly addresses research question 7: among our sampled artists, groups had a median collab count of 17 vs. 4 for solo artists, a notable difference that may reflect how group credits are recorded in MusicBrainz.
 
+
+
+Ratings
+================================================================================
+
+Column {data-width=580}
+--------------------------------------------------------------------------------
+
+### Active vs. Inactive Artist Ratings
+```{r}
+
+renderPlotly({
+  artists |>
+    filter(!is.na(Is_Active), !is.na(User_Rating)) |>
+    mutate(Status = ifelse(Is_Active == TRUE, "Active", "Inactive")) |>
+    plot_ly(y         = ~User_Rating,
+            color     = ~Status,
+            type      = "box",
+            colors    = c("steelblue", "coral"),
+            boxpoints = "outliers") |>
+    layout(
+      yaxis  = list(title = "User Rating (0–5)"),
+      xaxis  = list(title = "Active Status"),
+      legend = list(title = list(text = "Status"))
+    )
+})
+```
+
+Column {data-width=420}
+--------------------------------------------------------------------------------
+### Findings 
+
+Among our sampled artists, inactive artists tended to receive slightly higher median ratings (~4.6) compared to active artists (~4.35), and their ratings were considerably more consistent — the inactive box is much narrower with no low outliers. Active artists show much more spread in ratings, including several outliers down to around 2.3–2.5. This may reflect a legacy effect: inactive artists in our sample tend to be well-established classic acts with dedicated fanbases who rate them highly on MusicBrainz, while active artists are more varied in recognition and reception. That said, both groups cluster above 4.0, so overall ratings are high across the board in this sample.
+
 Conclusion
-==========================
+================================================================================
 
 ### Conclusion 
-Taken together, these findings suggest that within our sample of 96 manually selected artists, artist type (group vs. solo) is the strongest differentiator in collaboration behavior, while geography and age play more modest roles. Because artists were hand-picked rather than randomly sampled, these patterns should not be generalized to global music trends, they reflect characteristics of this particular curated group. Future work using a randomized or stratified sample would allow for stronger conclusions.
+
+Within our sample of 96 manually selected artists, several patterns emerged 
+across geography, collaboration behavior, and active status.
+
+Artist type (group vs. solo) was the strongest differentiator in collaboration 
+behavior, with groups showing a median collab count of 17 compared to just 4 
+for solo artists. This likely reflects both how group credits are recorded in 
+MusicBrainz and the collaborative nature of group work itself.
+
+Inactive artists in our sample tended to receive slightly higher and more 
+consistent ratings than active artists, suggesting a possible legacy effect — 
+well-established classic acts with long-standing fanbases may be rated more 
+reliably than active artists, who show greater variation in recognition and 
+reception. Active artists also produced more low-rating outliers, potentially 
+reflecting newer or more niche artists included in our selection.
+
+Geographically, most artists in our sample cluster in the USA, UK, and Canada, 
+and no single region clearly dominates in terms of rating, suggesting that 
+within this group, location alone does not predict popularity. Age showed only 
+a weak positive relationship with collaboration count, meaning time in the 
+industry plays a modest but not decisive role.
+
+Because artists were hand-picked rather than randomly sampled, none of these 
+patterns should be generalized to global music trends, they reflect 
+characteristics of this particular curated group. Future work using a 
+randomized or stratified sample from MusicBrainz would allow for stronger 
+and more generalizable conclusions.
+
+### Limitations
+This project is best understood as an exploratory analysis of a convenience sample, similar to how a researcher might pilot a study before designing a larger one. The value is in the dashboard itself and the patterns it surfaces, not in generalization.
 
 ### References
 - [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API)
 - [flexdashboard](https://pkgs.rstudio.com/flexdashboard/)
+- [shiny](https://shiny.posit.co/)
 - [Leaflet for R](https://rstudio.github.io/leaflet/)
 - [plotly for R](https://plotly.com/r/)
 - [GitHub Repository](https://github.com/CelineeUWC/SDS_MP2)
+- [Tidygeocoder package](https://jessecambon.github.io/tidygeocoder/)
+- [GT package](https://r-graph-gallery.com/package/gt.html)
