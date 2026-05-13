@@ -533,6 +533,37 @@ renderPlotly({
 
 ```
 
+
+```{r}
+# Function to create a cleaned dataset for a given country
+get_country_artists <- function(country_name) {
+
+  artists_map |>
+    
+    # Select only the columns needed for mapping and analysis
+    select(Artist, Country, Hometown_lat, Hometown_long, Hometown) |>
+    
+    # Filter dataset to only include artists from the chosen country
+    filter(Country == country_name)
+
+}
+
+# Create dataset for Lebanon artists using function
+artist_leb <- get_country_artists("lebanon")
+
+# Create dataset for Mexico artists using function
+artist_mex <- get_country_artists("mexico")
+
+# Create dataset for USA artists using function
+artist_usa <- get_country_artists("usa")
+
+# Create dataset for UK artists using function
+artist_uk <- get_country_artists("uk")
+
+# Create dataset for Canada artists using function
+artist_can <- get_country_artists("canada")
+```
+
 # Collabs
 
 # Conclusion

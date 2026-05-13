@@ -386,24 +386,29 @@ Column {data-width=200}
 
 
 ```{r,echo=FALSE}
-artist_leb <- artists_map |>
-  select(Artist,Country, Hometown_lat, Hometown_long, Hometown)|>
-  filter(Country == "lebanon")
+# Function to create a cleaned dataset for a given country
+get_country_artists <- function(country_name) {
 
-artist_mex <- artists_map |>
-  select(Artist,Country,Hometown_lat,Hometown_long, Hometown)|>
-  filter(Country == "mexico")
+  artists_map |>
+    # Select only the columns needed for mapping and analysis
+    select(Artist, Country, Hometown_lat, Hometown_long, Hometown) |>
+    # Filter dataset to only include artists from the chosen country
+    filter(Country == country_name)
+}
+# Create dataset for Lebanon artists using function
+artist_leb <- get_country_artists("lebanon")
 
-artist_usa <- artists_map |>
-  select(Artist,Country, Hometown_lat, Hometown_long, Hometown)|>
-  filter(Country == "usa") 
+# Create dataset for Mexico artists using function
+artist_mex <- get_country_artists("mexico")
 
-artist_uk <- artists_map |>
-  select(Artist,Country, Hometown_lat,Hometown_long, Hometown)|>
-  filter(Country == "uk")
-artist_can <- artists_map |>
-  select(Artist,Country, Hometown_lat,Hometown_long, Hometown)|>
-  filter(Country == "canada")
+# Create dataset for USA artists using function
+artist_usa <- get_country_artists("usa")
+
+# Create dataset for UK artists using function
+artist_uk <- get_country_artists("uk")
+
+# Create dataset for Canada artists using function
+artist_can <- get_country_artists("canada")
 
 ```
 
@@ -414,11 +419,19 @@ artist_can <- artists_map |>
 
 output$map <- renderLeaflet({
 
+  # Check which country user selected
   if (input$n_breaks == "lebanon") {
+    
     leaflet() |>
-      addTiles() |>
+      addTiles() |> # Adds map background
+      
+      # Centers map using average coordinates
       setView(lng = mean(artist_leb$Hometown_long), lat = mean(artist_leb$Hometown_lat), zoom = 6) |>
+      
+      # Adds informational popup about country music
       addPopups(35.969155, 33.8413248, "Welcome to Lebanon, Lebanese music is a vibrant mix of traditional Levantine folk and modern, high-energy pop, often featuring heavy rhythmic beats from the darbuka (goblet drum) and riq (tambourine). It is a massive regional hub for both Arabic pop and genres like deep house, with Beirut renowned for its thriving nightlife and rooftop club scene") |>
+      
+      # Adds artist hometown markers
       addCircleMarkers(data = artist_leb,
                       lng = ~Hometown_long,
                       lat = ~Hometown_lat,
@@ -428,9 +441,15 @@ output$map <- renderLeaflet({
   } else if (input$n_breaks == "mexico") {
 
     leaflet() |>
-      addTiles() |>
+      addTiles() |> # Adds map background
+      
+      # Centers map using artist coordinates
       setView(lng = mean(artist_mex$Hometown_long), lat = mean(artist_mex$Hometown_lat), zoom = 6) |>
+      
+      # Country popup information
       addPopups(-102.5528, 23.6345, "Welcome to Mexico,Mexican music is a vibrant, diverse, and historical blend of indigenous, Spanish, and African influences, heavily featuring strings, brass, and storytelling. It ranges from 500-year-old folk styles to modern, chart-topping rancheras, often highlighting themes of love, loss, and national pride") |>
+      
+      # Adds hometown markers for artists
       addCircleMarkers(data = artist_mex,
                       lng = ~Hometown_long,
                       lat = ~Hometown_lat,
@@ -441,9 +460,15 @@ output$map <- renderLeaflet({
   }else if (input$n_breaks == "usa") {
 
     leaflet() |>
-      addTiles() |>
+      addTiles() |> # Adds map tiles
+      
+       # Centers USA map
        setView(lng = mean(artist_usa$Hometown_long), lat = mean(artist_usa$Hometown_lat), zoom = 6) |>
+      
+      # USA popup description
       addPopups(-121.6253101,48.7433334, "Welcome to United States, American music history is full of surprising trivia, such as the fact that iconic bands like Led Zeppelin and R.E.M. never achieved a #1 single in the US, while Rihanna has ten. The best-selling instrument in the US is the harmonica, and the cast of the show Glee has charted more songs than The Beatles")|>
+      
+      # Artist location markers
       addCircleMarkers(data = artist_usa,
                       lng = ~Hometown_long,
                       lat = ~Hometown_lat,
@@ -453,9 +478,15 @@ output$map <- renderLeaflet({
   }else if (input$n_breaks == "uk") {
 
     leaflet() |>
-      addTiles() |>
+      addTiles() |> # Adds background map
+      
+      # Centers UK map
       setView(lng = mean(artist_uk$Hometown_long), lat = mean(artist_uk$Hometown_lat), zoom = 6) |>
+      
+      # UK popup information
       addPopups(-4.0987501,55.5581317, "Welcome to United Kindgom, The UK music scene has a rich, compact history that has shaped global pop culture, featuring pioneering punk scenes, extensive folk traditions, and enduring chart rivalries. Elton John’s Candle in the Wind '97 is the best-selling single in UK history, while Lewis Capaldi holds the top-streamed song record") |>
+      
+      # UK artist markers
       addCircleMarkers(data = artist_uk,
                       lng = ~Hometown_long,
                       lat = ~Hometown_lat,
@@ -465,9 +496,15 @@ output$map <- renderLeaflet({
   } else if (input$n_breaks == "canada") {
 
     leaflet() |>
-      addTiles() |>
+      addTiles() |> # Adds map background
+      
+       # Centers Canada map
        setView(lng = mean(artist_can$Hometown_long), lat = mean(artist_can$Hometown_lat), zoom = 6) |>
+      
+      # Canada popup text
       addPopups(-89.756176,65.2931221, "Welcome to Canada,Canada is a massive exporter of musical talent, often ranking as the world's third-largest behind the US and UK. Notable quirks include Bryan Adams photographing the Queen, 1970s punk band D.O.A. coining the term hardcore and Toronto pianist Ruth Lowe writing Frank Sinatra's breakout hit I'll Never Smile Again") |>
+      
+      # Canada artist markers
       addCircleMarkers(data = artist_can,
                       lng = ~Hometown_long,
                       lat = ~Hometown_lat,
@@ -489,27 +526,36 @@ Column {data-width=200}
 
 
 ```{r}
+# Function that creates a bar plot of artists for a selected country
 artist_plot <- function(country_name) {
+  
+  # Filter dataset to only include artists from the selected country
   artists |> 
       filter(Country == country_name) |>
-     plot_ly(
-        x = ~Artist,
-        y = ~User_Rating,
-        type = "bar",
-        color = ~Gender,
-        text = ~Artist,
+      
+      # Create interactive bar plot using Plotly
+      plot_ly(
+        x = ~Artist,          # Artist names on x-axis
+        y = ~User_Rating,     # User ratings on y-axis
+        type = "bar",         # Bar chart type
+        color = ~Gender,      # Color bars by gender
+        text = ~Artist,       # Hover text shows artist name
+        
+        # Custom hover display format
         hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
       ) |>
+      
+      # Customize layout of the plot
       layout(
-        xaxis = list(title = "Artist"),
-        yaxis = list(title = "User Rating"),
-        barmode = "group"
+        xaxis = list(title = "Artist"),        # X-axis label
+        yaxis = list(title = "User Rating"),   # Y-axis label
+        barmode = "group"                      # Group bars by category
       )
 } 
-  
 ```
 
 ```{r}
+# Render the Plotly plot based on user-selected country input
 renderPlotly({
   artist_plot(input$n_breaks)
 })
@@ -519,28 +565,39 @@ renderPlotly({
 ### Collabration Plot
 
 ```{r, echo=FALSE}
+# Function that creates a scatter plot showing collaboration count by age
 collab_plot <- function(country_name) {
-    artists |>
-      filter(Country == country_name) |>
-      plot_ly(
-        x = ~Age,
-        y = ~Collab_Count,
-        type = "scatter",
-        color = ~Artist,
-        text = ~Artist,
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
-      layout(
-        xaxis = list(title = "Age"),
-        yaxis = list(title = "Collab Count"),
-        barmode = "group"
-      )
+  
+  # Filter data for selected country
+  artists |>
     
+    filter(Country == country_name) |>
+    
+    # Create interactive Plotly scatter plot
+    plot_ly(
+      x = ~Age,              # Artist age on x-axis
+      y = ~Collab_Count,     # Number of collaborations on y-axis
+      type = "scatter",      # Scatter plot type
+      color = ~Artist,       # Each artist gets a different color
+      text = ~Artist,        # Hover text shows artist name
+      
+      # Custom hover display
+      hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+    ) |>
+    
+    # Layout formatting
+    layout(
+      xaxis = list(title = "Age"),             # X-axis label
+      yaxis = list(title = "Collab Count"),    # Y-axis label
+      barmode = "group"                        # (not used in scatter but kept as-is)
+    )
 }
+
 
 ```
 
 ```{r}
+# Render the interactive plot based on selected country input
 renderPlotly({
   collab_plot(input$n_breaks)
 })
