@@ -216,7 +216,7 @@ Column {data-width=540}
 
 ### Research Questions
 
-This project explores patterns in artist ratings, collaboration behavior, and geography among a sample of 96 global music artists from MusicBrainz.
+This project explores patterns in artist ratings, collaboration behavior, and demographical and geographical information among a sample of 96 global music artists from MusicBrainz.
 
 ---
 
@@ -228,7 +228,7 @@ This project explores patterns in artist ratings, collaboration behavior, and ge
 3. How does collaboration count vary by artist type?
 4. Is there a relationship between artist age and collaboration count?
 
-####  Geography
+####  Demography And Geography
 5. How are artists geographically distributed within this sample?
 6. Do rating patterns appear to differ across countries?
 
@@ -462,19 +462,15 @@ output$map <- renderLeaflet({
       
       # USA popup description
       addPopups(-121.6253101,48.7433334, "Welcome to United States, American music history is full of surprising trivia, such as the fact that iconic bands like Led Zeppelin and R.E.M. never achieved a #1 single in the US, while Rihanna has ten. The best-selling instrument in the US is the harmonica, and the cast of the show Glee has charted more songs than The Beatles")|>
-      
       # Artist location markers
       addCircleMarkers(data = artist_usa,
                       lng = ~Hometown_long,
                       lat = ~Hometown_lat,
                        color = "blue",
                       popup = paste0("Name: ", artist_usa$Artist))
-
   }else if (input$n_breaks == "uk") {
-
     leaflet() |>
       addTiles() |> # Adds background map
-      
       # Centers UK map
       setView(lng = mean(artist_uk$Hometown_long), lat = mean(artist_uk$Hometown_lat), zoom = 6) |>
       
@@ -505,9 +501,7 @@ output$map <- renderLeaflet({
                       lat = ~Hometown_lat,
                        color = "black",
                       popup = paste0("Name: ", artist_can$Artist))
-
   } 
-
 })
 ```
 
@@ -523,23 +517,22 @@ Column {data-width=200}
 ```{r}
 # Function that creates a bar plot of artists for a selected country
 artist_plot <- function(country_name) {
-  
   # Filter dataset to only include artists from the selected country
   artists |> 
       filter(Country == country_name) |>
-      
       # Create interactive bar plot using Plotly
       plot_ly(
         x = ~Artist,          # Artist names on x-axis
         y = ~User_Rating,     # User ratings on y-axis
         type = "bar",         # Bar chart type
         color = ~Gender,      # Color bars by gender
-        text = ~Artist,       # Hover text shows artist name
-        
-        # Custom hover display format
-        hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
-      ) |>
+        text = ~paste(         # # Hover text shows artist name 
+        "Artist:", Artist,
+        "<br>Rating:", User_Rating
+      ),
       
+      hoverinfo = "text"
+      ) |>
       # Customize layout of the plot
       layout(
         xaxis = list(title = "Artist"),        # X-axis label
@@ -562,24 +555,22 @@ renderPlotly({
 ```{r, echo=FALSE}
 # Function that creates a scatter plot showing collaboration count by age
 collab_plot <- function(country_name) {
-  
   # Filter data for selected country
   artists |>
-    
     filter(Country == country_name) |>
-    
     # Create interactive Plotly scatter plot
     plot_ly(
       x = ~Age,              # Artist age on x-axis
       y = ~Collab_Count,     # Number of collaborations on y-axis
       type = "scatter",      # Scatter plot type
       color = ~Artist,       # Each artist gets a different color
-      text = ~Artist,        # Hover text shows artist name
+      text = ~paste(         # # Hover text shows artist name 
+        "Artist:", Artist,
+        "<br>Rating:", Collab_Count
+      ),
       
-      # Custom hover display
-      hovertemplate = "<b>%{text}</b><br>Rating: %{y}<extra></extra>"
+      hoverinfo = "text"
     ) |>
-    
     # Layout formatting
     layout(
       xaxis = list(title = "Age"),             # X-axis label
@@ -656,8 +647,12 @@ renderPlotly({
                type  = "scatter",
                mode  = "markers",
                color = ~Type,
-               text  = ~Artist,
-               hovertemplate = "<b>%{text}</b><br>Age: %{x}<br>Collabs: %{y}<extra></extra>",
+               text = ~paste(         # # Hover text shows artist name 
+        "Artist:", Artist,
+        "<br>Rating:", Collab_Count
+      ),
+      
+      hoverinfo = "text",
                marker = list(size = 8, opacity = 0.7))
 
   if (nrow(df) >= 5 && sd(df$Age, na.rm = TRUE) > 0) {
@@ -692,8 +687,12 @@ renderPlotly({
             type  = "scatter",
             mode  = "markers",
             color = ~Type,
-            text  = ~Artist,
-            hovertemplate = "<b>%{text}</b><br>Collabs: %{x}<br>Rating: %{y:.2f}<extra></extra>",
+            text = ~paste(         # # Hover text shows artist name 
+        "Artist:", Artist,
+        "<br>Rating:", User_Rating
+      ),
+      
+      hoverinfo = "text",
             marker = list(size = 7, opacity = 0.65)) |>
     layout(
       xaxis  = list(title = "Collaboration Count"),
@@ -776,7 +775,7 @@ Conclusion
 
 ### Conclusion 
 
-Within our sample of 96 manually selected artists, several patterns emerged 
+Within our sample of 96 manually selected favourite artists, several patterns emerged 
 across geography, collaboration behavior, and active status.
 
 Artist type (group vs. solo) was the strongest differentiator in collaboration 
@@ -791,22 +790,37 @@ reliably than active artists, who show greater variation in recognition and
 reception. Active artists also produced more low-rating outliers, potentially 
 reflecting newer or more niche artists included in our selection.
 
-Geographically, most artists in our sample cluster in the USA, UK, and Canada, 
+Geographically, most of our favorite artists in our sample cluster in the USA, UK, and Canada, 
 and no single region clearly dominates in terms of rating, suggesting that 
 within this group, location alone does not predict popularity. Age showed only 
 a weak positive relationship with collaboration count, meaning time in the 
 industry plays a modest but not decisive role.
 
-Because artists were hand-picked rather than randomly sampled, none of these 
-patterns should be generalized to global music trends, they reflect 
-characteristics of this particular curated group. Future work using a 
-randomized or stratified sample from MusicBrainz would allow for stronger 
-and more generalizable conclusions.
-
 ### Limitations
-This project is best understood as an exploratory analysis of a convenience sample, similar to how a researcher might pilot a study before designing a larger one. The value is in the dashboard itself and the patterns it surfaces, not in generalization.
 
-### Limitations
+This project should be understood as an exploratory analysis based on a convenience sample of 96 manually selected favorite artists. Rather than aiming for generalization, the primary goal is to identify patterns within this curated dataset and demonstrate how they can be explored through the dashboard.
+
+ -The sample is not randomly selected, which introduces selection bias and prevents generalization to the broader population of music artists.
+ 
+ -Because artists were hand-picked, the dataset likely overrepresents well-known or personally familiar artists, which may skew observed patterns in collaboration, ratings, and geography.
+ 
+ -Some variables (such as ratings and collaboration counts) may be influenced by how MusicBrainz records or aggregates data, introducing potential measurement bias.
+ 
+ -The relatively small sample size limits the strength of statistical inference and makes results sensitive to individual high- or low-influence observations.we liked to discover. 
+
+### Future work
+Future extensions of this project could strengthen both the robustness and generalizability of the findings:
+
+ -Collect a randomized or stratified sample of artists from MusicBrainz to reduce selection bias and improve representativeness.
+ 
+ -Increase the number of artists and observations to improve statistical power and stability of results.
+ 
+ -Include additional variables (e.g., genre, number of releases, popularity metrics over time) to enable deeper multivariate analysis.
+
+ -Incorporate automated data collection (web scraping or API extraction) to ensure consistency and scalability of the dataset.
+
+ -Explore temporal trends to understand how collaboration patterns and ratings evolve over time.
+
 
 ### References
 - [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API)
