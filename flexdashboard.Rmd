@@ -161,6 +161,8 @@ recordings worldwide. This dataset was constructed by manually selecting 96 arti
 The full code and raw data live on our
 [**GitHub Repository →**](https://github.com/CelineeUWC/SDS_MP2)
 
+By: Celine Al Miari and Yareli Rosales for SDS264
+
 
 Column {data-width=520}
 --------------------------------------------------------------------------------
@@ -292,7 +294,9 @@ hr()
 p(em("Circle size = rating. Click any marker for full details."))
 ```
 
-Column {data-width=700}
+
+
+Column {data-width=750}
 --------------------------------------------------------------------------------
 
 ### Interactive World Map of Artists
@@ -354,6 +358,9 @@ renderLeaflet({
 })
 ```
 
+
+Column {data-width=250}
+--------------------------------------------------------------------------------
 ### Findings
 Within our sample, most artists cluster in the USA, UK, and Canada, with smaller concentrations in Lebanon and Mexico. Circle size (rating) doesn't appear to concentrate in any single region, suggesting that within this curated group, no clear geographic pattern in user ratings appeared within this sample.
 
@@ -550,7 +557,7 @@ renderPlotly({
 ```
 
 
-### Collabration Plot
+### Collaboration Plot
 
 ```{r, echo=FALSE}
 # Function that creates a scatter plot showing collaboration count by age
@@ -678,22 +685,51 @@ renderPlotly({
 
 ```{r collab-rating-scatter}
 # do artists who collaborate more also get rated higher?
-# This directly addresses research question 6.
 renderPlotly({
-  col_data() |>
-    filter(!is.na(User_Rating)) |>
-    plot_ly(x     = ~Collab_Count,
-            y     = ~User_Rating,
-            type  = "scatter",
-            mode  = "markers",
-            color = ~Type,
-            text = ~paste(         # # Hover text shows artist name 
-        "Artist:", Artist,
-        "<br>Rating:", User_Rating
-      ),
-      
-      hoverinfo = "text",
-            marker = list(size = 7, opacity = 0.65)) |>
+
+  df <- col_data() |>
+    filter(!is.na(User_Rating))
+
+  p <- plot_ly(
+    df,
+    x     = ~Collab_Count,
+    y     = ~User_Rating,
+    type  = "scatter",
+    mode  = "markers",
+    color = ~Type,
+
+    text = ~paste(
+      "Artist:", Artist,
+      "<br>Rating:", User_Rating
+    ),
+
+    hoverinfo = "text",
+    marker = list(size = 7, opacity = 0.65)
+  )
+
+  # add linear trend line
+  if (nrow(df) >= 5 && sd(df$Collab_Count, na.rm = TRUE) > 0) {
+
+    fit <- lm(User_Rating ~ Collab_Count, data = df)
+
+    p <- p |>
+      add_lines(
+        x = ~Collab_Count,
+        y = fitted(fit),
+        name = "Linear trend",
+
+        line = list(
+          color = "red",
+          dash  = "dash",
+          width = 2
+        ),
+
+        inherit = FALSE,
+        showlegend = TRUE
+      )
+  }
+
+  p |>
     layout(
       xaxis  = list(title = "Collaboration Count"),
       yaxis  = list(title = "User Rating (0–5)"),
@@ -734,8 +770,7 @@ Among the artists in our sample, the age vs. collaboration scatter shows a sligh
 The collab count vs. user rating scatter shows no strong relationship within our sample, suggesting that collaborating more does not reliably translate to higher ratings for either groups or solo artists.
 
 
-The boxplot most directly addresses research question 7: among our sampled artists, groups had a median collab count of 17 vs. 4 for solo artists, a notable difference that may reflect how group credits are recorded in MusicBrainz.
-
+The boxplot most directly addresses research question 3: among our sampled artists, groups had a median collaboration count of 17 compared to 4 for solo artists, a notable difference that may reflect both how group credits are recorded in MusicBrainz and the collaborative nature of group work itself.
 
 
 Ratings
@@ -773,15 +808,20 @@ Among our sampled artists, inactive artists tended to receive slightly higher me
 Conclusion
 ================================================================================
 
+Column {data-width=500}
+--------------------------------------------------------------------------------
+
 ### Conclusion 
 
 Within our sample of 96 manually selected favourite artists, several patterns emerged 
 across geography, collaboration behavior, and active status.
 
+
 Artist type (group vs. solo) was the strongest differentiator in collaboration 
 behavior, with groups showing a median collab count of 17 compared to just 4 
 for solo artists. This likely reflects both how group credits are recorded in 
 MusicBrainz and the collaborative nature of group work itself.
+
 
 Inactive artists in our sample tended to receive slightly higher and more 
 consistent ratings than active artists, suggesting a possible legacy effect — 
@@ -789,6 +829,7 @@ well-established classic acts with long-standing fanbases may be rated more
 reliably than active artists, who show greater variation in recognition and 
 reception. Active artists also produced more low-rating outliers, potentially 
 reflecting newer or more niche artists included in our selection.
+
 
 Geographically, most of our favorite artists in our sample cluster in the USA, UK, and Canada, 
 and no single region clearly dominates in terms of rating, suggesting that 
@@ -806,7 +847,11 @@ This project should be understood as an exploratory analysis based on a convenie
  
  -Some variables (such as ratings and collaboration counts) may be influenced by how MusicBrainz records or aggregates data, introducing potential measurement bias.
  
- -The relatively small sample size limits the strength of statistical inference and makes results sensitive to individual high- or low-influence observations.we liked to discover. 
+ -The relatively small sample size limits the strength of statistical inference and makes results sensitive to individual high- or low-influence observations.
+ 
+
+Column {data-width=500}
+--------------------------------------------------------------------------------
 
 ### Future work
 Future extensions of this project could strengthen both the robustness and generalizability of the findings:
